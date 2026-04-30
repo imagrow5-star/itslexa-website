@@ -381,7 +381,11 @@ footer a:hover{color:#888}
           <li>Owner dashboard</li>
           <li>Google Calendar sync</li>
         </ul>
-        <div id="paypal-essential"></div>
+        <div id="paypal-essential" style="margin-top:8px"></div>
+        <a href="https://www.paypal.com/webapps/billing/plans/P-86L265787M100722SNHZRH4Y" 
+           id="essential-fallback"
+           style="display:none;width:100%;padding:13px;background:#C4933A;color:#000;border-radius:10px;font-size:14px;font-weight:500;text-align:center;text-decoration:none;margin-top:8px;display:block"
+           target="_blank">Subscribe with PayPal</a>
       </div>
       <div class="plan featured">
         <div class="plan-name">Prestige</div>
@@ -395,7 +399,11 @@ footer a:hover{color:#888}
           <li>Fill slow periods automatically</li>
           <li>Weekly performance reports</li>
         </ul>
-        <div id="paypal-prestige"></div>
+        <div id="paypal-prestige" style="margin-top:8px"></div>
+        <a href="https://www.paypal.com/webapps/billing/plans/P-3AK97705DF981224CNHZRNYY"
+           id="prestige-fallback" 
+           style="display:none;width:100%;padding:13px;background:#C4933A;color:#000;border-radius:10px;font-size:14px;font-weight:500;text-align:center;text-decoration:none;margin-top:8px;display:block"
+           target="_blank">Subscribe with PayPal</a>
       </div>
       <div class="plan">
         <div class="plan-name">Enterprise</div>
@@ -628,6 +636,14 @@ async function submitLead() {
   onload="initPayPal()"
 ></script>
 <script>
+// Show fallback buttons after 4s if PayPal not loaded
+setTimeout(function(){
+  if(typeof paypal === 'undefined'){
+    document.getElementById('essential-fallback').style.display='block';
+    document.getElementById('prestige-fallback').style.display='block';
+  }
+}, 4000);
+
 function initPayPal() {
   renderPayPal('paypal-essential', 'P-86L265787M100722SNHZRH4Y');
   renderPayPal('paypal-prestige', 'P-3AK97705DF981224CNHZRNYY');
