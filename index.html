@@ -236,8 +236,8 @@ footer a:hover{color:#888}
       </div>
       <div class="step">
         <div class="step-num">02</div>
-        <h3>Forward your phone number</h3>
-        <p>Forward your existing number to Lexa, or use a dedicated number we provide for you.</p>
+        <h3>Keep your existing number</h3>
+        <p>No need to change anything. Simply set up call forwarding to your Lexa number. Takes 2 minutes.</p>
       </div>
       <div class="step">
         <div class="step-num">03</div>
@@ -381,21 +381,21 @@ footer a:hover{color:#888}
           <li>Owner dashboard</li>
           <li>Google Calendar sync</li>
         </ul>
-        <a href="#" onclick="openModal('Essential');return false" class="btn-plan btn-ghost">Start free trial</a>
+        <div id="paypal-essential"></div>
       </div>
       <div class="plan featured">
         <div class="plan-name">Prestige</div>
         <div class="plan-price"><sup>$</sup>499</div>
-        <div class="plan-sub">per month · up to 2,000 calls</div>
+        <div class="plan-sub">per month · up to 1,000 calls</div>
         <ul class="plan-features">
           <li>Everything in Essential</li>
-          <li>Up to 2,000 calls per month</li>
+          <li>Up to 1,000 calls per month</li>
           <li>Feedback and review collection</li>
           <li>Lapsed customer recovery</li>
           <li>Fill slow periods automatically</li>
           <li>Weekly performance reports</li>
         </ul>
-        <a href="#" onclick="openModal('Prestige');return false" class="btn-plan btn-gold">Start free trial</a>
+        <div id="paypal-prestige"></div>
       </div>
       <div class="plan">
         <div class="plan-name">Enterprise</div>
@@ -620,6 +620,54 @@ async function submitLead() {
     });
   } catch(e) {}
 }
+</script>
+
+<!-- PAYPAL -->
+<script 
+  src="https://www.paypal.com/sdk/js?client-id=ASp1-ctl_qzOlNrYjvQclFvz46G_lPPdM1S7SeyBPSRn-DEtzSHWu7xphw2q6vm0hXPqE_UdZNY0tuS-&vault=true&intent=subscription"
+  onload="initPayPal()"
+></script>
+<script>
+function initPayPal() {
+  renderPayPal('paypal-essential', 'P-86L265787M100722SNHZRH4Y');
+  renderPayPal('paypal-prestige', 'P-3AK97705DF981224CNHZRNYY');
+}
+function renderPayPal(containerId, planId) {
+  paypal.Buttons({
+    style: {
+      shape: 'rect',
+      color: 'gold',
+      layout: 'vertical',
+      label: 'subscribe',
+      height: 45
+    },
+    createSubscription: function(data, actions) {
+      return actions.subscription.create({ plan_id: planId });
+    },
+    onApprove: function(data, actions) {
+      // Save subscription
+      fetch('https://dashboard.itslexa.com/api/new-subscription', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          subscription_id: data.subscriptionID,
+          plan_id: planId
+        })
+      });
+      // Show success
+      document.getElementById('modal').classList.add('open');
+      document.getElementById('s1').style.display = 'none';
+      document.getElementById('s2').style.display = 'none';
+      document.getElementById('s3').style.display = 'none';
+      document.getElementById('s4').style.display = 'block';
+    },
+    onError: function(err) {
+      alert('Payment error. Please try again or contact support@itslexa.com');
+    }
+  }).render('#' + containerId);
+}
+
+// Rendered via onload above
 </script>
 </body>
 </html>
