@@ -2,694 +2,775 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lexa — AI Receptionist for Service Businesses</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#07070B;--ash:#0f0f13;--mist:#17171c;
-  --border:rgba(255,255,255,0.08);--paper:#F0EDE8;
-  --gold:#C4933A;--gold2:rgba(196,147,58,0.12);
-  --green:#1A9E6E;
+  --bg:#09090B;--s1:#111113;--s2:#18181C;--s3:#1E1E24;
+  --b:rgba(255,255,255,.06);--bh:rgba(255,255,255,.11);
+  --text:#F1EEE9;--muted:rgba(241,238,233,.54);--dim:rgba(241,238,233,.26);
+  --accent:#C4933A;--accent-l:#E8B86D;--accent-bg:rgba(196,147,58,.08);--accent-b:rgba(196,147,58,.2);
+  --green:#22C55E;--green-bg:rgba(34,197,94,.08);--green-b:rgba(34,197,94,.2);
+  --gold:#D4A847;
+  --serif:'Instrument Serif',Georgia,serif;
+  --sans:'Geist',-apple-system,sans-serif;
+  --mono:'Geist Mono',monospace;
 }
-*{margin:0;padding:0;box-sizing:border-box}
+*{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:var(--ink);color:var(--paper);font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* noise */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.45}
 
 /* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 48px;display:flex;justify-content:space-between;align-items:center;background:rgba(7,7,11,0.85);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border)}
-.logo{font-family:'Playfair Display',serif;font-size:22px;letter-spacing:-0.5px;color:var(--paper)}
-.logo em{color:var(--gold);font-style:italic}
-.nav-links{display:flex;align-items:center;gap:32px}
-.nav-links a{font-size:13px;color:#888;text-decoration:none;transition:color 0.2s}
-.nav-links a:hover{color:var(--paper)}
-.btn-nav{background:var(--gold);color:var(--ink);padding:9px 22px;border-radius:8px;font-size:13px;font-weight:500;text-decoration:none;transition:all 0.2s}
-.btn-nav:hover{background:#d4a840;color:var(--ink)}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 52px;display:flex;align-items:center;justify-content:space-between;transition:all .3s}
+nav.solid{background:rgba(9,9,11,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--b)}
+.logo{font-family:var(--serif);font-size:19px;color:var(--text);text-decoration:none;letter-spacing:-.3px}
+.logo-dot{color:var(--accent)}
+.nav-links{display:flex;align-items:center;gap:28px;list-style:none}
+.nav-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .2s}
+.nav-links a:hover,.nav-links a:focus{color:var(--text)}
+.nav-cta{background:var(--text);color:var(--bg)!important;padding:7px 18px;border-radius:6px;font-weight:500!important;transition:opacity .2s!important}
+.nav-cta:hover{opacity:.85!important}
 
 /* HERO */
-.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:120px 24px 80px;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(196,147,58,0.08) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-60%);pointer-events:none}
-.hero-tag{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:20px;opacity:0;animation:fadeUp 0.8s 0.2s forwards}
-.hero h1{font-family:'Playfair Display',serif;font-size:clamp(44px,7vw,76px);font-weight:700;line-height:1.08;letter-spacing:-1.5px;max-width:820px;margin-bottom:24px;opacity:0;animation:fadeUp 0.8s 0.4s forwards}
-.hero h1 em{font-style:italic;color:var(--gold)}
-.hero p{font-size:17px;color:#888;max-width:520px;line-height:1.75;margin-bottom:40px;opacity:0;animation:fadeUp 0.8s 0.6s forwards}
-.hero-btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;opacity:0;animation:fadeUp 0.8s 0.8s forwards}
-.btn-primary{background:var(--gold);color:var(--ink);padding:14px 32px;border-radius:10px;font-size:15px;font-weight:500;text-decoration:none;transition:all 0.2s}
-.btn-primary:hover{background:#d4a840;transform:translateY(-2px)}
-.btn-secondary{background:transparent;color:var(--paper);padding:14px 32px;border-radius:10px;font-size:15px;border:0.5px solid rgba(255,255,255,0.15);text-decoration:none;transition:all 0.2s}
-.btn-secondary:hover{border-color:rgba(255,255,255,0.3)}
-.hero-proof{margin-top:56px;font-size:12px;color:#555;opacity:0;animation:fadeUp 0.8s 1s forwards}
+.hero{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 24px 72px;position:relative;overflow:hidden}
+.h-glow{position:absolute;top:0;left:50%;transform:translateX(-50%);width:900px;height:700px;background:radial-gradient(ellipse 55% 45% at 50% 0%,rgba(196,147,58,.17),transparent 100%);pointer-events:none}
+.h-grid{position:absolute;inset:0;background-image:linear-gradient(var(--b) 1px,transparent 1px),linear-gradient(90deg,var(--b) 1px,transparent 1px);background-size:72px 72px;mask-image:radial-gradient(ellipse 85% 65% at 50% 0%,#000 20%,transparent 100%);pointer-events:none}
 
-/* MARQUEE */
-.marquee-wrap{overflow:hidden;padding:24px 0;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);background:var(--ash)}
-.marquee{display:flex;gap:48px;white-space:nowrap;animation:scroll 20s linear infinite}
-.marquee span{font-size:13px;color:#555;letter-spacing:1px}
-.marquee span strong{color:#888;font-weight:400}
-@keyframes scroll{to{transform:translateX(-50%)}}
+.badge{display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border:1px solid var(--green-b);background:var(--green-bg);border-radius:100px;font-size:11px;font-family:var(--mono);color:var(--green);letter-spacing:.5px;margin-bottom:26px;position:relative;z-index:1}
+.badge-dot{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1;box-shadow:0 0 8px var(--green)}50%{opacity:.25;box-shadow:none}}
 
-/* SECTION */
-section{padding:100px 24px}
-.container{max-width:1040px;margin:0 auto}
-.section-tag{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
-.section-title{font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,48px);font-weight:700;line-height:1.15;letter-spacing:-0.5px;margin-bottom:16px}
-.section-sub{font-size:16px;color:#888;max-width:500px;line-height:1.7;margin-bottom:56px}
+.h1{font-family:var(--serif);font-size:clamp(46px,6.5vw,86px);font-weight:400;line-height:1.02;letter-spacing:-1.5px;max-width:840px;margin-bottom:20px;position:relative;z-index:1}
+.h1 em{font-style:italic;color:var(--accent-l)}
+.h-sub{font-size:17px;color:var(--muted);max-width:470px;line-height:1.72;margin-bottom:38px;position:relative;z-index:1;font-weight:300}
+.h-btns{display:flex;gap:11px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1;margin-bottom:14px}
+.btn-a{padding:12px 26px;background:var(--accent);color:#fff;border:none;border-radius:7px;font-family:var(--sans);font-size:14px;font-weight:500;cursor:pointer;text-decoration:none;letter-spacing:-.1px;transition:all .2s}
+.btn-a:hover{background:var(--accent-l);transform:translateY(-1px);box-shadow:0 8px 28px rgba(196,147,58,.35)}
+.btn-b{padding:12px 26px;background:transparent;color:var(--text);border:1px solid var(--b);border-radius:7px;font-size:14px;cursor:pointer;text-decoration:none;transition:all .2s;letter-spacing:-.1px}
+.btn-b:hover{border-color:var(--bh);background:rgba(255,255,255,.03)}
+.h-note{font-size:12px;color:var(--dim);font-family:var(--mono);position:relative;z-index:1}
+
+/* WAVEFORM */
+.wave-card{background:var(--s1);border:1px solid var(--b);border-radius:14px;overflow:hidden;max-width:680px;width:100%;margin:44px auto 0;position:relative;z-index:1}
+.wc-bar{padding:11px 16px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.015)}
+.wc-dots span{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px}
+.wc-dots .d1{background:#FF5F57}.wc-dots .d2{background:#FEBC2E}.wc-dots .d3{background:#28C840}
+.wc-title{font-size:11px;font-family:var(--mono);color:var(--muted);margin:0 auto}
+.wc-live{font-size:10px;color:var(--green);font-family:var(--mono);display:flex;align-items:center;gap:4px}
+.wc-live::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--green);box-shadow:0 0 4px var(--green)}
+.wc-body{padding:16px 20px}
+.bars{display:flex;align-items:center;gap:2px;height:36px;margin-bottom:14px}
+.bar{flex:1;border-radius:2px;background:var(--accent);opacity:.55;animation:wb 1.5s ease-in-out infinite}
+@keyframes wb{0%,100%{transform:scaleY(.18)}50%{transform:scaleY(1)}}
+.bar:nth-child(1){animation-delay:0s}.bar:nth-child(2){animation-delay:.06s}.bar:nth-child(3){animation-delay:.12s;opacity:.8}
+.bar:nth-child(4){animation-delay:.18s}.bar:nth-child(5){animation-delay:.24s;opacity:.9}.bar:nth-child(6){animation-delay:.3s}
+.bar:nth-child(7){animation-delay:.36s;opacity:.85}.bar:nth-child(8){animation-delay:.42s}.bar:nth-child(9){animation-delay:.48s;opacity:.7}
+.bar:nth-child(10){animation-delay:.54s}.bar:nth-child(11){animation-delay:.6s;opacity:.9}.bar:nth-child(12){animation-delay:.66s}
+.bar:nth-child(13){animation-delay:.72s;opacity:.75}.bar:nth-child(14){animation-delay:.78s}.bar:nth-child(15){animation-delay:.84s;opacity:.85}
+.bar:nth-child(16){animation-delay:.9s}.bar:nth-child(17){animation-delay:.96s;opacity:.8}.bar:nth-child(18){animation-delay:1.02s}
+.bar:nth-child(19){animation-delay:1.08s;opacity:.7}.bar:nth-child(20){animation-delay:1.14s}.bar:nth-child(21){animation-delay:.04s;opacity:.75}
+.bar:nth-child(22){animation-delay:.1s}.bar:nth-child(23){animation-delay:.16s;opacity:.9}.bar:nth-child(24){animation-delay:.22s}
+.bar:nth-child(25){animation-delay:.28s;opacity:.8}.bar:nth-child(26){animation-delay:.34s}.bar:nth-child(27){animation-delay:.4s;opacity:.7}
+.bar:nth-child(28){animation-delay:.46s}.bar:nth-child(29){animation-delay:.52s;opacity:.85}.bar:nth-child(30){animation-delay:.58s}
+.wc-row{display:flex;align-items:flex-start;gap:9px;margin-bottom:9px}
+.wc-row:last-child{margin-bottom:0}
+.tag{font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:4px;flex-shrink:0;margin-top:2px}
+.tag-l{background:var(--accent-bg);color:var(--accent-l);border:1px solid var(--accent-b)}
+.tag-c{background:rgba(255,255,255,.05);color:var(--muted);border:1px solid var(--b)}
+.wc-txt{font-size:12px;color:var(--muted);line-height:1.55}
+.wc-txt strong{color:var(--text)}
+.wc-t{font-size:9px;color:var(--dim);margin-left:auto;flex-shrink:0;font-family:var(--mono);padding-top:3px}
+
+/* TICKER */
+.ticker-wrap{border-top:1px solid var(--b);border-bottom:1px solid var(--b);background:var(--s1);padding:18px 0;overflow:hidden;white-space:nowrap}
+.ticker{display:inline-flex;animation:tick 30s linear infinite}
+@keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.tick-item{display:inline-flex;align-items:center;gap:7px;padding:0 28px;font-size:13px;color:var(--dim);flex-shrink:0}
+.tick-sep{color:rgba(255,255,255,.1);padding:0 4px}
+
+/* SECTIONS */
+.sec{padding:96px 24px;max-width:1100px;margin:0 auto}
+.sec-full{padding:96px 24px;border-top:1px solid var(--b);border-bottom:1px solid var(--b);background:var(--s1)}
+.sec-full .sec-in{max-width:1100px;margin:0 auto}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:1.8px;color:var(--accent-l);text-transform:uppercase;margin-bottom:13px}
+h2{font-family:var(--serif);font-size:clamp(32px,3.8vw,52px);font-weight:400;letter-spacing:-.9px;line-height:1.08;margin-bottom:16px}
+h2 em{font-style:italic;color:var(--accent-l)}
+.sub{font-size:15px;color:var(--muted);max-width:500px;line-height:1.72;font-weight:300;margin-bottom:52px}
+
+/* CARD GRID */
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--b);border:1px solid var(--b);border-radius:12px;overflow:hidden}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--b);border:1px solid var(--b);border-radius:12px;overflow:hidden}
+.card{background:var(--s1);padding:32px;transition:background .2s}
+.card:hover{background:var(--s2)}
+.card-icon{width:36px;height:36px;border-radius:8px;background:var(--accent-bg);border:1px solid var(--accent-b);display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:17px}
+.card h3{font-family:var(--serif);font-size:19px;font-weight:400;letter-spacing:-.3px;margin-bottom:9px}
+.card p{font-size:13px;color:var(--muted);line-height:1.65;font-weight:300}
+.chip{display:inline-block;margin-top:13px;padding:2px 9px;background:var(--accent-bg);border:1px solid var(--accent-b);border-radius:4px;font-size:10px;font-family:var(--mono);color:var(--accent-l);letter-spacing:.3px}
+.chip-green{background:var(--green-bg);border-color:var(--green-b);color:var(--green)}
+
+/* ── USP 1: OWNER CONTROL ─────────────────────── */
+.control-wrap{padding:96px 24px}
+.control-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.dash-mock{background:var(--s1);border:1px solid var(--b);border-radius:14px;overflow:hidden}
+.dm-header{padding:13px 16px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.02)}
+.dm-header-title{font-size:12px;font-weight:500;flex:1}
+.dm-status{font-size:10px;font-family:var(--mono);color:var(--green);display:flex;align-items:center;gap:4px}
+.dm-status::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--green);box-shadow:0 0 4px var(--green)}
+.dm-body{padding:14px}
+.booking-row{background:var(--s2);border:1px solid var(--b);border-radius:9px;padding:13px 14px;margin-bottom:10px}
+.booking-row:last-child{margin-bottom:0}
+.br-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.br-name{font-size:13px;font-weight:500}
+.br-time{font-size:10px;font-family:var(--mono);color:var(--muted)}
+.br-detail{font-size:11px;color:var(--muted);margin-bottom:10px}
+.br-btns{display:flex;gap:8px}
+.br-confirm{padding:5px 14px;background:var(--green);color:#000;border:none;border-radius:5px;font-size:11px;font-weight:500;cursor:pointer;font-family:var(--sans);transition:opacity .2s}
+.br-confirm:hover{opacity:.85}
+.br-decline{padding:5px 14px;background:transparent;color:var(--muted);border:1px solid var(--b);border-radius:5px;font-size:11px;cursor:pointer;font-family:var(--sans);transition:all .2s}
+.br-decline:hover{border-color:var(--bh);color:var(--text)}
+.br-pending{display:flex;align-items:center;gap:5px;font-size:10px;font-family:var(--mono);color:var(--gold)}
+.br-pending::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--gold)}
+
+/* ── USP 2: OFFERS ───────────────────────────── */
+.offer-demo{background:var(--s1);border:1px solid var(--b);border-radius:14px;overflow:hidden}
+.od-header{padding:11px 15px;border-bottom:1px solid var(--b);display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.02)}
+.od-title{font-size:11px;font-family:var(--mono);color:var(--muted)}
+.od-live{font-size:10px;color:var(--green);font-family:var(--mono);display:flex;align-items:center;gap:4px}
+.od-live::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--green);box-shadow:0 0 4px var(--green)}
+.od-body{padding:15px}
+.msg-row{display:flex;align-items:flex-start;gap:9px;margin-bottom:10px}
+.msg-row:last-child{margin-bottom:0}
+.msg-lbl{font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:4px;flex-shrink:0;margin-top:2px}
+.msg-lbl.l{background:var(--accent-bg);color:var(--accent-l);border:1px solid var(--accent-b)}
+.msg-lbl.c{background:rgba(255,255,255,.05);color:var(--muted);border:1px solid var(--b)}
+.msg-body{font-size:12px;color:var(--muted);line-height:1.55}
+.msg-body strong{color:var(--text)}
+.msg-body .offer-highlight{color:var(--gold);font-weight:500}
+.offer-tag{display:inline-flex;align-items:center;gap:6px;margin-top:3px;font-size:10px;font-family:var(--mono);color:var(--gold)}
+.offer-tag::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--gold);box-shadow:0 0 4px var(--gold)}
+
+/* ── USP 3: HOLIDAY ──────────────────────────── */
+.holiday-demo{background:var(--s1);border:1px solid var(--b);border-radius:14px;overflow:hidden}
+.hol-header{padding:11px 15px;border-bottom:1px solid var(--b);background:rgba(255,255,255,.02);font-size:11px;font-family:var(--mono);color:var(--muted)}
+.hol-body{padding:15px}
+.cal-row{display:flex;gap:4px;margin-bottom:12px}
+.cal-day{flex:1;aspect-ratio:1;border-radius:5px;background:var(--s2);border:1px solid var(--b);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;font-family:var(--mono);color:var(--muted);cursor:default;transition:all .2s}
+.cal-day:hover{border-color:var(--bh)}
+.cal-day.closed{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.2);color:rgba(239,68,68,.7)}
+.cal-day.closed .cal-x{font-size:8px;color:rgba(239,68,68,.6);margin-top:1px}
+.cal-day.today{background:var(--accent-bg);border-color:var(--accent-b);color:var(--accent-l)}
+.cal-note{font-size:11px;color:var(--muted);line-height:1.55;border-top:1px solid var(--b);padding-top:12px;font-weight:300}
+.cal-note strong{color:var(--text)}
 
 /* HOW IT WORKS */
-.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2px;background:var(--border)}
-.step{background:var(--ash);padding:36px 28px}
-.step-num{font-family:'Playfair Display',serif;font-size:40px;color:var(--gold);opacity:0.4;line-height:1;margin-bottom:16px}
-.step h3{font-size:16px;font-weight:500;margin-bottom:8px}
-.step p{font-size:14px;color:#666;line-height:1.7}
+.steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--b);border:1px solid var(--b);border-radius:12px;overflow:hidden;margin-top:48px}
+.step{background:var(--s1);padding:32px 28px;position:relative;transition:background .2s}
+.step:hover{background:var(--s2)}
+.step-n{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--dim);margin-bottom:18px}
+.step h3{font-family:var(--serif);font-size:18px;font-weight:400;letter-spacing:-.2px;margin-bottom:9px}
+.step p{font-size:12px;color:var(--muted);line-height:1.65;font-weight:300}
+.step-time{display:inline-block;margin-top:12px;padding:2px 8px;border:1px solid var(--b);border-radius:4px;font-size:10px;font-family:var(--mono);color:var(--dim)}
 
-/* DEMO PHONE */
-.demo-wrap{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
-.phone-frame{background:var(--mist);border:0.5px solid var(--border);border-radius:24px;padding:28px;max-width:320px;margin:0 auto}
-.chat-msg{margin-bottom:12px;display:flex;flex-direction:column}
-.chat-msg.lexa{align-items:flex-start}
-.chat-msg.caller{align-items:flex-end}
-.bubble{padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.6;max-width:85%}
-.bubble.lexa{background:var(--ash);border:0.5px solid var(--border);color:var(--paper)}
-.bubble.caller{background:var(--gold);color:var(--ink)}
-.chat-label{font-size:10px;color:#555;margin-bottom:4px;letter-spacing:0.5px}
-
-/* FEATURES */
-.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
-.feature{background:var(--ash);border:0.5px solid var(--border);border-radius:16px;padding:28px;transition:border-color 0.3s}
-.feature:hover{border-color:rgba(196,147,58,0.3)}
-.feature-icon{font-size:24px;margin-bottom:14px}
-.feature h3{font-size:15px;font-weight:500;margin-bottom:8px}
-.feature p{font-size:13px;color:#666;line-height:1.65}
-
-/* INDUSTRIES */
-.industries{display:flex;flex-wrap:wrap;gap:10px;margin-top:32px}
-.ind{padding:8px 18px;border:0.5px solid var(--border);border-radius:20px;font-size:13px;color:#888;transition:all 0.2s;cursor:default}
-.ind:hover{border-color:var(--gold);color:var(--gold)}
+/* CALL TO ACTION DEMO */
+.demo-callout{margin-top:52px;background:var(--s2);border:1px solid var(--accent-b);border-radius:12px;padding:28px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.demo-callout-text h3{font-family:var(--serif);font-size:22px;font-weight:400;margin-bottom:6px}
+.demo-callout-text p{font-size:13px;color:var(--muted);font-weight:300}
+.demo-callout-text .phone{font-family:var(--mono);font-size:14px;color:var(--accent-l);margin-top:6px}
 
 /* PRICING */
-.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
-.plan{background:var(--ash);border:0.5px solid var(--border);border-radius:20px;padding:32px}
-.plan.featured{border-color:var(--gold);position:relative}
-.plan.featured::before{content:'Most Popular';position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--ink);font-size:11px;font-weight:500;padding:3px 14px;border-radius:20px}
-.plan-name{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#666;margin-bottom:12px}
-.plan-price{font-family:'Playfair Display',serif;font-size:52px;font-weight:700;line-height:1;margin-bottom:4px}
-.plan-price sup{font-size:20px;font-weight:400;font-family:'DM Sans',sans-serif;vertical-align:super}
-.plan-sub{font-size:13px;color:#555;margin-bottom:28px;padding-bottom:28px;border-bottom:0.5px solid var(--border)}
-.plan-features{list-style:none;margin-bottom:28px}
-.plan-features li{font-size:14px;color:#aaa;padding:6px 0;display:flex;gap:10px;align-items:flex-start}
-.plan-features li::before{content:'';width:5px;height:5px;background:var(--gold);border-radius:50%;flex-shrink:0;margin-top:6px}
-.btn-plan{width:100%;padding:13px;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.2s;text-decoration:none;display:block;text-align:center;border:none}
-.btn-gold{background:var(--gold);color:var(--ink)}
-.btn-gold:hover{background:#d4a840}
-.btn-ghost{background:transparent;color:var(--paper);border:0.5px solid var(--border)}
-.btn-ghost:hover{border-color:rgba(255,255,255,0.3)}
-.plan-enterprise{font-size:13px;color:#666;text-align:center;margin-top:12px}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--b);border:1px solid var(--b);border-radius:12px;overflow:hidden;margin-top:52px}
+.plan{background:var(--s1);padding:36px 32px;position:relative;transition:background .2s}
+.plan:hover{background:var(--s2)}
+.plan.featured{background:var(--s2)}
+.plan-pop{position:absolute;top:0;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;font-size:9px;font-family:var(--mono);padding:3px 12px;border-radius:0 0 6px 6px;letter-spacing:.5px;font-weight:500}
+.plan-tier{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
+.plan-price{font-family:var(--mono);font-size:42px;font-weight:500;letter-spacing:-2px;line-height:1}
+.plan-price sup{font-size:20px;letter-spacing:0;vertical-align:super;margin-right:2px}
+.plan.featured .plan-price{color:var(--accent-l)}
+.plan-mo{font-size:12px;color:var(--muted);margin:6px 0 4px;font-weight:300}
+.plan-calls{font-family:var(--mono);font-size:11px;color:var(--accent-l);margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--b)}
+.plan-feats{list-style:none;margin-bottom:28px;display:flex;flex-direction:column;gap:9px}
+.plan-feats li{font-size:12px;color:var(--muted);display:flex;gap:9px;line-height:1.5;font-weight:300;align-items:flex-start}
+.plan-feats li::before{content:'✓';color:var(--green);flex-shrink:0;font-size:11px;margin-top:1px}
+.plan-btn{display:block;width:100%;padding:11px;border:1px solid var(--b);border-radius:7px;background:transparent;color:var(--text);font-family:var(--sans);font-size:13px;font-weight:500;cursor:pointer;text-align:center;text-decoration:none;transition:all .2s;letter-spacing:-.1px}
+.plan-btn:hover{border-color:var(--bh);background:rgba(255,255,255,.03)}
+.plan.featured .plan-btn{background:var(--accent);color:#fff;border-color:var(--accent)}
+.plan.featured .plan-btn:hover{background:var(--accent-l);border-color:var(--accent-l)}
+.plan-note{margin-top:18px;text-align:center;font-size:11px;color:var(--dim);font-family:var(--mono)}
 
 /* TESTIMONIALS */
-.testi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
-.testi{background:var(--ash);border:0.5px solid var(--border);border-radius:16px;padding:28px}
-.testi-stars{color:var(--gold);font-size:14px;margin-bottom:12px}
-.testi p{font-size:14px;color:#aaa;line-height:1.7;margin-bottom:16px;font-style:italic}
-.testi-name{font-size:13px;font-weight:500}
-.testi-biz{font-size:12px;color:#555}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--b);border:1px solid var(--b);border-radius:12px;overflow:hidden;margin-top:48px}
+.testi{background:var(--s1);padding:30px;transition:background .2s}
+.testi:hover{background:var(--s2)}
+.testi-stars{color:var(--gold);font-size:12px;letter-spacing:2px;margin-bottom:14px}
+.testi-q{font-family:var(--serif);font-size:16px;font-weight:400;font-style:italic;line-height:1.65;margin-bottom:18px}
+.testi-name{font-size:13px;font-weight:500;display:block;margin-bottom:2px}
+.testi-biz{font-size:11px;color:var(--muted);font-family:var(--mono)}
+
+/* FAQ */
+.faq-list{border:1px solid var(--b);border-radius:12px;overflow:hidden;margin-top:48px}
+.faq-item{border-bottom:1px solid var(--b)}
+.faq-item:last-child{border-bottom:none}
+.faq-q{width:100%;text-align:left;padding:19px 24px;background:var(--s1);border:none;color:var(--text);font-family:var(--sans);font-size:14px;font-weight:400;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;transition:background .2s;letter-spacing:-.1px}
+.faq-q:hover{background:var(--s2)}
+.faq-icon{font-family:var(--mono);font-size:17px;color:var(--muted);transition:transform .25s,color .2s;flex-shrink:0}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .25s;font-size:13px;color:var(--muted);line-height:1.72;background:var(--s1);font-weight:300}
+.faq-item.open .faq-a{max-height:300px;padding:0 24px 20px}
+.faq-item.open .faq-q{color:var(--accent-l)}
+.faq-item.open .faq-icon{transform:rotate(45deg);color:var(--accent-l)}
 
 /* CTA */
-.cta-box{background:var(--ash);border:0.5px solid var(--border);border-radius:24px;padding:64px 48px;text-align:center;position:relative;overflow:hidden}
-.cta-box::before{content:'';position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(196,147,58,0.06) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+.cta-section{padding:80px 24px}
+.cta-box{max-width:860px;margin:0 auto;background:var(--s1);border:1px solid var(--b);border-radius:16px;padding:68px 48px;text-align:center;position:relative;overflow:hidden}
+.cta-glow{position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:500px;height:280px;background:radial-gradient(ellipse,rgba(196,147,58,.14),transparent 70%);pointer-events:none}
+.cta-box h2{max-width:560px;margin:0 auto 13px}
+.cta-box p{font-size:15px;color:var(--muted);margin-bottom:32px;font-weight:300}
+.cta-btns{display:flex;gap:11px;justify-content:center;flex-wrap:wrap}
 
 /* FOOTER */
-footer{padding:40px 48px;border-top:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
-footer a{font-size:13px;color:#555;text-decoration:none}
-footer a:hover{color:#888}
+footer{border-top:1px solid var(--b);padding:34px 52px;display:flex;align-items:center;justify-content:space-between}
+.f-logo{font-family:var(--serif);font-size:16px;color:var(--muted)}
+.f-logo-dot{color:var(--accent)}
+.f-links{display:flex;gap:22px;list-style:none}
+.f-links a{font-size:11px;color:var(--dim);text-decoration:none;font-family:var(--mono);transition:color .2s}
+.f-links a:hover{color:var(--muted)}
+.f-copy{font-size:11px;color:var(--dim);font-family:var(--mono)}
 
-/* ANIMATIONS */
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+/* REVEAL */
+.fu{opacity:0;transform:translateY(16px);transition:opacity .55s cubic-bezier(.16,1,.3,1),transform .55s cubic-bezier(.16,1,.3,1)}
+.fu.v{opacity:1;transform:none}
 
-/* MODAL */
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
-.modal-bg.open{display:flex}
-.modal{background:var(--ash);border:0.5px solid var(--border);border-radius:20px;width:100%;max-width:500px;position:relative;overflow:hidden}
-.modal-top{height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
-.modal-body{padding:36px}
-.modal h2{font-family:'Playfair Display',serif;font-size:26px;margin-bottom:6px}
-.modal-sub{font-size:13px;color:#666;margin-bottom:28px}
-.steps-bar{display:flex;gap:6px;margin-bottom:28px}
-.step-dot{flex:1;height:3px;background:var(--border);border-radius:2px;transition:background 0.3s}
-.step-dot.done{background:var(--gold)}
-.form-label{font-size:12px;color:#666;letter-spacing:0.5px;margin-bottom:6px;display:block}
-.form-input{width:100%;background:#111115;border:0.5px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--paper);padding:11px 14px;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:14px;transition:border-color 0.2s}
-.form-input:focus{border-color:rgba(196,147,58,0.4)}
-.form-input::placeholder{color:#444}
-.form-select{width:100%;background:#111115;border:0.5px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--paper);padding:11px 14px;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:14px;appearance:none}
-.ind-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
-.ind-btn{padding:10px 12px;background:#111115;border:0.5px solid rgba(255,255,255,0.1);border-radius:8px;color:#888;font-size:13px;cursor:pointer;text-align:center;transition:all 0.2s;font-family:'DM Sans',sans-serif}
-.ind-btn.selected{background:var(--gold2);border-color:var(--gold);color:var(--gold)}
-.btn-next{width:100%;padding:13px;background:var(--gold);color:var(--ink);border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;margin-top:8px;font-family:'DM Sans',sans-serif;transition:background 0.2s}
-.btn-next:hover{background:#d4a840}
-.btn-back{background:transparent;border:none;color:#666;font-size:13px;cursor:pointer;margin-top:12px;width:100%;font-family:'DM Sans',sans-serif}
-.btn-back:hover{color:var(--paper)}
-.success-icon{font-size:48px;text-align:center;margin-bottom:16px}
-
+/* MOBILE */
 @media(max-width:768px){
-  nav{padding:16px 20px}
+  nav{padding:14px 20px}
   .nav-links{display:none}
-  .demo-wrap{grid-template-columns:1fr}
-  footer{flex-direction:column;text-align:center}
+  .grid-3,.grid-2,.steps-grid,.plans,.testi-grid{grid-template-columns:1fr}
+  .control-inner{grid-template-columns:1fr}
+  .demo-callout{flex-direction:column;gap:16px}
+  .cta-box{padding:44px 24px}
+  footer{flex-direction:column;gap:18px;text-align:center;padding:28px 20px}
+  h2{font-size:30px}
 }
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="logo">lexa<em>.</em></div>
-  <div class="nav-links">
-    <a href="#how">How it works</a>
-    <a href="#features">Features</a>
-    <a href="#pricing">Pricing</a>
-    <a href="#" onclick="openModal();return false" class="btn-nav">Start free trial</a>
-  </div>
+<!-- NAV -->
+<nav id="nav">
+  <a href="/" class="logo">lexa<span class="logo-dot">.</span></a>
+  <ul class="nav-links">
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="https://dashboard.itslexa.com">Dashboard</a></li>
+    <li><a href="#pricing" class="nav-cta">Start free →</a></li>
+  </ul>
 </nav>
 
 <!-- HERO -->
-<section class="hero">
-  <div class="hero-tag">AI Receptionist — Built for Service Businesses</div>
-  <h1>Every call answered.<br>Every booking <em>confirmed.</em></h1>
-  <p>Lexa answers your calls 24/7, books appointments, and remembers every customer — so you never miss a booking again.</p>
-  <div class="hero-btns">
-    <a href="#" onclick="openModal();return false" class="btn-primary">Start 14-day free trial</a>
-    <a href="#how" class="btn-secondary">See how it works</a>
-  </div>
-  <div class="hero-proof">No credit card required &nbsp;·&nbsp; Set up in 5 minutes &nbsp;·&nbsp; Cancel any time</div>
-</section>
+<div class="hero">
+  <div class="h-glow"></div>
+  <div class="h-grid"></div>
 
-<!-- MARQUEE -->
-<div class="marquee-wrap">
-  <div class="marquee">
-    <span><strong>Hair Salons</strong></span>
-    <span>·</span>
-    <span><strong>Dental Clinics</strong></span>
-    <span>·</span>
-    <span><strong>Spas &amp; Wellness</strong></span>
-    <span>·</span>
-    <span><strong>Veterinary Clinics</strong></span>
-    <span>·</span>
-    <span><strong>Fitness Studios</strong></span>
-    <span>·</span>
-    <span><strong>Nail Bars</strong></span>
-    <span>·</span>
-    <span><strong>Physiotherapy</strong></span>
-    <span>·</span>
-    <span><strong>Home Services</strong></span>
-    <span>·</span>
-    <span><strong>Optometrists</strong></span>
-    <span>·</span>
-    <span><strong>Hair Salons</strong></span>
-    <span>·</span>
-    <span><strong>Dental Clinics</strong></span>
-    <span>·</span>
-    <span><strong>Spas &amp; Wellness</strong></span>
-    <span>·</span>
-    <span><strong>Veterinary Clinics</strong></span>
-    <span>·</span>
-    <span><strong>Fitness Studios</strong></span>
-    <span>·</span>
-    <span><strong>Nail Bars</strong></span>
-    <span>·</span>
-    <span><strong>Physiotherapy</strong></span>
-    <span>·</span>
-    <span><strong>Home Services</strong></span>
-    <span>·</span>
-    <span><strong>Optometrists</strong></span>
+  <div class="badge fu"><div class="badge-dot"></div>Answering calls right now</div>
+
+  <h1 class="h1 fu">Every call answered.<br>Every booking <em>confirmed.</em></h1>
+
+  <p class="h-sub fu">Lexa answers your calls 24/7, books appointments, and remembers every customer — so you never miss a booking again.</p>
+
+  <div class="h-btns fu">
+    <a href="#pricing" class="btn-a">Start 14-day free trial →</a>
+    <a href="tel:+13203359845" class="btn-b">📞 Call Lexa: +1 (320) 335-9845</a>
+  </div>
+  <p class="h-note fu">No credit card · Set up in 5 minutes · Cancel any time</p>
+
+  <!-- Live waveform -->
+  <div class="wave-card fu">
+    <div class="wc-bar">
+      <div class="wc-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <span class="wc-title">Lexa · Live call in progress</span>
+      <span class="wc-live">Connected</span>
+    </div>
+    <div class="wc-body">
+      <div class="bars">
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+      </div>
+      <div class="wc-row">
+        <span class="tag tag-c">Caller</span>
+        <span class="wc-txt">Hi, I'd like to book a <strong>haircut</strong> for Friday 9th May at 10am.</span>
+        <span class="wc-t">09:23:12</span>
+      </div>
+      <div class="wc-row" style="margin-top:8px">
+        <span class="tag tag-l">Lexa</span>
+        <span class="wc-txt">Perfect! Also — <strong class="offer-highlight" style="color:var(--gold)">we have 20% off all haircuts this week.</strong> Shall I confirm Friday 9th May at ten AM for you?</span>
+        <span class="wc-t">09:23:13</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span class="tick-item">✂️ Hair Salons</span><span class="tick-sep">·</span>
+    <span class="tick-item">🦷 Dental Clinics</span><span class="tick-sep">·</span>
+    <span class="tick-item">🔧 Plumbers & HVAC</span><span class="tick-sep">·</span>
+    <span class="tick-item">🏋️ Personal Trainers</span><span class="tick-sep">·</span>
+    <span class="tick-item">🐾 Veterinary</span><span class="tick-sep">·</span>
+    <span class="tick-item">💆 Spas & Wellness</span><span class="tick-sep">·</span>
+    <span class="tick-item">🍽️ Restaurants</span><span class="tick-sep">·</span>
+    <span class="tick-item">🏥 Medical Clinics</span><span class="tick-sep">·</span>
+    <span class="tick-item">⚖️ Law Firms</span><span class="tick-sep">·</span>
+    <span class="tick-item">💅 Nail Studios</span><span class="tick-sep">·</span>
+    <span class="tick-item">🦵 Physiotherapy</span><span class="tick-sep">·</span>
+    <!-- repeat -->
+    <span class="tick-item">✂️ Hair Salons</span><span class="tick-sep">·</span>
+    <span class="tick-item">🦷 Dental Clinics</span><span class="tick-sep">·</span>
+    <span class="tick-item">🔧 Plumbers & HVAC</span><span class="tick-sep">·</span>
+    <span class="tick-item">🏋️ Personal Trainers</span><span class="tick-sep">·</span>
+    <span class="tick-item">🐾 Veterinary</span><span class="tick-sep">·</span>
+    <span class="tick-item">💆 Spas & Wellness</span><span class="tick-sep">·</span>
+    <span class="tick-item">🍽️ Restaurants</span><span class="tick-sep">·</span>
+    <span class="tick-item">🏥 Medical Clinics</span><span class="tick-sep">·</span>
+    <span class="tick-item">⚖️ Law Firms</span><span class="tick-sep">·</span>
+    <span class="tick-item">💅 Nail Studios</span><span class="tick-sep">·</span>
+    <span class="tick-item">🦵 Physiotherapy</span>
   </div>
 </div>
 
 <!-- HOW IT WORKS -->
-<section id="how">
-  <div class="container">
-    <div class="section-tag">How it works</div>
-    <h2 class="section-title">Up and running<br>in 5 minutes</h2>
-    <p class="section-sub">No technical setup. No complicated integrations. Just tell Lexa about your business and she is ready to take calls.</p>
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">01</div>
-        <h3>Tell Lexa about your business</h3>
-        <p>Add your services, hours, and any special instructions. Lexa learns your business instantly.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">02</div>
-        <h3>Keep your existing number</h3>
-        <p>No need to change anything. Simply set up call forwarding to your Lexa number. Takes 2 minutes.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">03</div>
-        <h3>Lexa starts taking calls</h3>
-        <p>Every call answered immediately. Appointments booked. Customers remembered by name.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">04</div>
-        <h3>You confirm from your dashboard</h3>
-        <p>See every booking in your dashboard. Confirm with one tap. Customer gets a text confirmation.</p>
-      </div>
+<div class="sec" id="how">
+  <div class="eyebrow fu">How it works</div>
+  <h2 class="fu">Up and running in <em>5 minutes</em></h2>
+  <p class="sub fu">No technical setup. No complicated integrations. Tell Lexa about your business — she is ready to take calls the same day.</p>
+  <div class="steps-grid">
+    <div class="step fu">
+      <div class="step-n">STEP 01</div>
+      <h3>Tell Lexa about your business</h3>
+      <p>Add your website URL. Lexa reads your services, hours, and pricing in minutes — no manual training needed.</p>
+      <span class="step-time">~3 minutes</span>
+    </div>
+    <div class="step fu">
+      <div class="step-n">STEP 02</div>
+      <h3>Forward your calls</h3>
+      <p>One setting in your phone. Lexa answers in your business name, sounds completely human, books in real time.</p>
+      <span class="step-time">~2 minutes</span>
+    </div>
+    <div class="step fu">
+      <div class="step-n">STEP 03</div>
+      <h3>Approve bookings in one tap</h3>
+      <p>Every booking hits your dashboard. Confirm or decline. Customer gets an SMS only after you approve.</p>
+      <span class="step-time">1 tap per booking</span>
+    </div>
+    <div class="step fu">
+      <div class="step-n">STEP 04</div>
+      <h3>Lexa handles everything else</h3>
+      <p>Offers, holidays, returning customers, feedback — she manages it all while you focus on your work.</p>
+      <span class="step-time">Fully automatic</span>
     </div>
   </div>
-</section>
+</div>
 
-<!-- DEMO CONVERSATION -->
-<section style="background:var(--ash);border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border)">
-  <div class="container">
-    <div class="demo-wrap">
-      <div>
-        <div class="section-tag">Real conversation</div>
-        <h2 class="section-title">Sounds like a<br>real <em>person.</em></h2>
-        <p style="font-size:16px;color:#888;line-height:1.75;margin-bottom:24px">Powered by ElevenLabs. Callers often cannot tell they are speaking to AI. Warm, natural, professional every call.</p>
-        <a href="tel:+13203359845" style="display:inline-flex;align-items:center;gap:10px;background:var(--gold2);border:0.5px solid rgba(196,147,58,0.3);color:var(--gold);padding:12px 22px;border-radius:10px;font-size:14px;text-decoration:none;transition:all 0.2s">
-          Call Lexa now — +1 (320) 335-9845
-        </a>
+<!-- USP 1: YOU'RE ALWAYS IN CONTROL -->
+<div class="control-wrap">
+  <div class="control-inner">
+    <div>
+      <div class="eyebrow fu">You're always in control</div>
+      <h2 class="fu">Every booking needs<br><em>your approval first</em></h2>
+      <p style="font-size:15px;color:var(--muted);line-height:1.72;font-weight:300;margin-bottom:28px" class="fu">
+        Lexa never books anything without you. Every appointment is held as pending until you tap Confirm in your dashboard. Your customer only gets a text after you approve — no surprises in your calendar, ever.
+      </p>
+      <div style="display:flex;flex-direction:column;gap:14px" class="fu">
+        <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted)">
+          <span style="color:var(--green);font-size:16px">✓</span> Caller books with Lexa — held as pending
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted)">
+          <span style="color:var(--green);font-size:16px">✓</span> You get notified instantly on your phone
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted)">
+          <span style="color:var(--green);font-size:16px">✓</span> One tap to confirm — SMS sent to customer
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted)">
+          <span style="color:var(--green);font-size:16px">✓</span> Decline with a reason — Lexa handles it
+        </div>
       </div>
-      <div class="phone-frame">
-        <div style="font-size:11px;color:#555;text-align:center;margin-bottom:16px;letter-spacing:0.5px">SAMPLE CALL</div>
-        <div class="chat-msg lexa">
-          <div class="chat-label">LEXA</div>
-          <div class="bubble lexa">Welcome to Bella Salon! This is Lexa, how can I help you today?</div>
+    </div>
+    <div class="fu">
+      <div class="dash-mock">
+        <div class="dm-header">
+          <div class="dm-header-title">Pending Bookings · 3 new</div>
+          <div class="dm-status">Live</div>
         </div>
-        <div class="chat-msg caller">
-          <div class="chat-label">CALLER</div>
-          <div class="bubble caller">Hi, I want to book a haircut tomorrow at 2pm</div>
-        </div>
-        <div class="chat-msg lexa">
-          <div class="chat-label">LEXA</div>
-          <div class="bubble lexa">Perfect! Shall I confirm to your number ending 4869?</div>
-        </div>
-        <div class="chat-msg caller">
-          <div class="chat-label">CALLER</div>
-          <div class="bubble caller">Yes please</div>
-        </div>
-        <div class="chat-msg lexa">
-          <div class="chat-label">LEXA</div>
-          <div class="bubble lexa">Wonderful! All booked. Our team will confirm within 10 minutes. See you tomorrow!</div>
+        <div class="dm-body">
+          <div class="booking-row">
+            <div class="br-top"><span class="br-name">Sarah Mitchell</span><span class="br-time">Today 2:00 PM</span></div>
+            <div class="br-detail">Haircut + Blowout · 90 min · via Lexa</div>
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div class="br-btns"><button class="br-confirm">Confirm ✓</button><button class="br-decline">Decline</button></div>
+              <span class="br-pending">Awaiting approval</span>
+            </div>
+          </div>
+          <div class="booking-row">
+            <div class="br-top"><span class="br-name">James K.</span><span class="br-time">Tomorrow 10:30 AM</span></div>
+            <div class="br-detail">Dental Check-up · 45 min · via Lexa</div>
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div class="br-btns"><button class="br-confirm">Confirm ✓</button><button class="br-decline">Decline</button></div>
+              <span class="br-pending">Awaiting approval</span>
+            </div>
+          </div>
+          <div class="booking-row" style="opacity:.5">
+            <div class="br-top"><span class="br-name">Priya M.</span><span class="br-time">Fri 4:00 PM</span></div>
+            <div class="br-detail">Deep Tissue Massage · 60 min · via Lexa</div>
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div class="br-btns"><button class="br-confirm">Confirm ✓</button><button class="br-decline">Decline</button></div>
+              <span class="br-pending">Awaiting approval</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</section>
+</div>
+
+<!-- USP 2: OFFER MENTIONS -->
+<div class="sec-full">
+  <div class="sec-in">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center">
+      <div class="fu">
+        <div class="offer-demo">
+          <div class="od-header">
+            <span class="od-title">Live call · Bella Salon</span>
+            <span class="od-live">Recording</span>
+          </div>
+          <div class="od-body">
+            <div class="msg-row">
+              <span class="msg-lbl c">Caller</span>
+              <div class="msg-body">I'd like to book a colour appointment.</div>
+            </div>
+            <div class="msg-row" style="margin-top:10px">
+              <span class="msg-lbl l">Lexa</span>
+              <div>
+                <div class="msg-body">Lovely! Also — <span class="offer-highlight">free toner with every colour this week.</span> What date works best for you?</div>
+                <div class="offer-tag">Active offer triggered · mentioned once</div>
+              </div>
+            </div>
+            <div class="msg-row" style="margin-top:10px">
+              <span class="msg-lbl c">Caller</span>
+              <div class="msg-body">Oh great! Thursday 8th May at 2pm please.</div>
+            </div>
+            <div class="msg-row" style="margin-top:10px">
+              <span class="msg-lbl l">Lexa</span>
+              <div class="msg-body">Thursday 8th May at two PM — shall I confirm to your number ending 4869?</div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:10px;padding:10px 14px;background:var(--s2);border:1px solid var(--b);border-radius:8px;font-size:11px;font-family:var(--mono);color:var(--dim)">
+          Offer paused in dashboard → Lexa goes silent on discounts immediately
+        </div>
+      </div>
+      <div>
+        <div class="eyebrow fu">Active offers</div>
+        <h2 class="fu">Your promotions<br><em>mentioned naturally</em></h2>
+        <p style="font-size:15px;color:var(--muted);line-height:1.72;font-weight:300;margin-bottom:28px" class="fu">
+          Add a special offer in your dashboard — "free toner with colour this week" — and Lexa mentions it at exactly the right moment. Once per call, only when relevant. Pause it and she stops instantly.
+        </p>
+        <div style="display:flex;flex-direction:column;gap:13px" class="fu">
+          <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted)">
+            <span style="color:var(--gold);font-size:16px">★</span> Added to dashboard → live on next call
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted)">
+            <span style="color:var(--gold);font-size:16px">★</span> Mentioned once — never repeated or pushy
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted)">
+            <span style="color:var(--gold);font-size:16px">★</span> Only triggers when the service matches
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted)">
+            <span style="color:var(--gold);font-size:16px">★</span> Pause it → Lexa stops mentioning immediately
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- USP 3: HOLIDAYS -->
+<div class="sec">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center">
+    <div>
+      <div class="eyebrow fu">Holiday & hours management</div>
+      <h2 class="fu">Lexa knows when<br><em>you're closed</em></h2>
+      <p style="font-size:15px;color:var(--muted);line-height:1.72;font-weight:300;margin-bottom:28px" class="fu">
+        Set your business hours and mark any holiday closures in your dashboard. Lexa checks every booking request against your calendar — and when you're closed, she suggests the next available slot automatically.
+      </p>
+      <div style="display:flex;flex-direction:column;gap:13px" class="fu">
+        <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted)">
+          <span style="color:var(--green);font-size:16px">✓</span> Mark holiday dates in one click
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted)">
+          <span style="color:var(--green);font-size:16px">✓</span> Lexa declines politely — suggests next slot
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted)">
+          <span style="color:var(--green);font-size:16px">✓</span> No bookings slip through on closed days
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted)">
+          <span style="color:var(--green);font-size:16px">✓</span> Works with custom hours per day of week
+        </div>
+      </div>
+    </div>
+    <div class="fu">
+      <div class="holiday-demo">
+        <div class="hol-header">Calendar · May 2026 — 2 holiday dates set</div>
+        <div class="hol-body">
+          <div class="cal-row">
+            <div class="cal-day"><span>Mon</span><span>4</span></div>
+            <div class="cal-day today"><span>Tue</span><span>5</span></div>
+            <div class="cal-day"><span>Wed</span><span>6</span></div>
+            <div class="cal-day"><span>Thu</span><span>7</span></div>
+            <div class="cal-day closed"><span>Fri</span><span>8</span><span class="cal-x">CLOSED</span></div>
+            <div class="cal-day closed"><span>Sat</span><span>9</span><span class="cal-x">CLOSED</span></div>
+            <div class="cal-day"><span>Sun</span><span>10</span></div>
+          </div>
+          <div class="cal-note">
+            Caller asks to book Friday 8th →<br>
+            <strong>Lexa: "We're actually closed that day — but I have a great slot on Monday the 11th from 9am. Would that work for you?"</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- FEATURES -->
-<section id="features">
-  <div class="container">
-    <div class="section-tag">Features</div>
-    <h2 class="section-title">Everything your<br>receptionist should do</h2>
-    <p class="section-sub">Built for real service businesses. Every feature designed around how your customers actually call.</p>
-    <div class="features-grid">
-      <div class="feature">
-        <div class="feature-icon">🎙️</div>
+<div class="sec-full" id="features">
+  <div class="sec-in">
+    <div class="eyebrow fu">Everything included</div>
+    <h2 class="fu">All the features your<br><em>receptionist should have</em></h2>
+    <p class="sub fu">Every feature designed around how your customers actually call — and what your business actually needs.</p>
+    <div class="grid-3">
+      <div class="card fu">
+        <div class="card-icon">🎙️</div>
         <h3>Human-sounding voice</h3>
-        <p>Powered by ElevenLabs. Callers often cannot tell they are speaking to AI. Warm, natural, professional every time.</p>
+        <p>Powered by ElevenLabs. Callers often cannot tell they are speaking to AI. Warm, natural, and professional on every single call.</p>
+        <span class="chip">ElevenLabs · ~800ms</span>
       </div>
-      <div class="feature">
-        <div class="feature-icon">📅</div>
-        <h3>Google Calendar check</h3>
-        <p>Lexa checks your live Google Calendar before confirming any slot. No double bookings, ever.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">🧠</div>
+      <div class="card fu">
+        <div class="card-icon">🧠</div>
         <h3>Remembers every customer</h3>
-        <p>Lexa knows returning callers by name, their preferred service, and past feedback.</p>
+        <p>Greets returning callers by name, recalls their last service, and flags your best customers as VIPs automatically.</p>
+        <span class="chip">CRM built-in</span>
       </div>
-      <div class="feature">
-        <div class="feature-icon">📱</div>
+      <div class="card fu">
+        <div class="card-icon">📅</div>
+        <h3>Google Calendar sync</h3>
+        <p>Lexa checks your live calendar before confirming any slot. No double bookings — ever.</p>
+        <span class="chip">Real-time sync</span>
+      </div>
+      <div class="card fu">
+        <div class="card-icon">📱</div>
         <h3>SMS confirmations</h3>
-        <p>Every confirmed booking triggers an SMS with full details — time, service, and address.</p>
+        <p>Every confirmed booking triggers an SMS to your customer — time, service, and address included. Sent only after you approve.</p>
+        <span class="chip">Owner-gated</span>
       </div>
-      <div class="feature">
-        <div class="feature-icon">💼</div>
-        <h3>Owner dashboard</h3>
-        <p>See every booking and customer in one dashboard. Confirm or decline with one tap.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">🔄</div>
+      <div class="card fu">
+        <div class="card-icon">🔄</div>
         <h3>Lapsed customer recovery</h3>
-        <p>Automatically reaches out to customers who have not visited in 6 weeks with a warm message.</p>
+        <p>Customers who haven't visited in a while automatically receive a warm, personalised message to bring them back.</p>
+        <span class="chip">Automatic</span>
       </div>
-      <div class="feature">
-        <div class="feature-icon">💡</div>
-        <h3>Fills slow periods</h3>
-        <p>Got quiet slots this week? Lexa messages recent customers automatically to fill them.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">📊</div>
-        <h3>Weekly reports</h3>
-        <p>Every week Lexa sends a report — calls handled, bookings made, and revenue estimate.</p>
+      <div class="card fu">
+        <div class="card-icon">📊</div>
+        <h3>Weekly performance report</h3>
+        <p>Every week — calls handled, bookings made, revenue estimate, and customers recovered. Straight to your inbox.</p>
+        <span class="chip">Every Monday</span>
       </div>
     </div>
 
-    <div style="margin-top:56px">
-      <div class="section-tag">Industries</div>
-      <h3 style="font-size:20px;font-weight:500;margin-bottom:16px">Works for any service business</h3>
-      <div class="industries">
-        <div class="ind">Hair Salons</div>
-        <div class="ind">Dental Clinics</div>
-        <div class="ind">Spas</div>
-        <div class="ind">Nail Bars</div>
-        <div class="ind">Fitness Studios</div>
-        <div class="ind">Veterinary Clinics</div>
-        <div class="ind">Physiotherapy</div>
-        <div class="ind">Optometrists</div>
-        <div class="ind">Home Services</div>
-        <div class="ind">Wellness Clinics</div>
-        <div class="ind">Plumbing</div>
-        <div class="ind">Any service business</div>
+    <!-- Demo callout -->
+    <div class="demo-callout fu">
+      <div class="demo-callout-text">
+        <h3>Hear Lexa for yourself</h3>
+        <p>Call the number below. Experience a real booking conversation — no setup, no sign-up.</p>
+        <div class="phone">+1 (320) 335-9845</div>
       </div>
+      <a href="tel:+13203359845" class="btn-a" style="white-space:nowrap">📞 Call Lexa now</a>
     </div>
   </div>
-</section>
+</div>
 
 <!-- PRICING -->
-<section id="pricing" style="background:var(--ash);border-top:0.5px solid var(--border)">
-  <div class="container">
-    <div class="section-tag">Pricing</div>
-    <h2 class="section-title">Simple, transparent pricing</h2>
-    <p class="section-sub">14-day free trial on all plans. No credit card required.</p>
-    <div class="pricing-grid">
-      <div class="plan">
-        <div class="plan-name" style="color:#C4933A">Essential</div>
-        <div class="plan-price"><sup>$</sup>299</div>
-        <div class="plan-sub">per month · up to 500 calls</div>
-        <ul class="plan-features">
-          <li>Answers every call 24/7</li>
-          <li>Books appointments instantly</li>
-          <li>Remembers customers by name</li>
-          <li>SMS confirmations</li>
-          <li>Owner dashboard</li>
-          <li>Google Calendar sync</li>
-        </ul>
-        <div id="paypal-essential" style="margin-top:8px"></div>
-        <a href="https://www.paypal.com/subscribe?plan_id=P-86L265787M100722SNHZRH4Y" 
-           id="essential-fallback"
-           style="width:100%;padding:13px;background:#C4933A;color:#000;border-radius:10px;font-size:14px;font-weight:600;text-align:center;text-decoration:none;margin-top:8px;display:block"
-           target="_blank">Subscribe with PayPal</a>
-      </div>
-      <div class="plan featured">
-        <div class="plan-name" style="color:#C4933A">Prestige</div>
-        <div class="plan-price"><sup>$</sup>499</div>
-        <div class="plan-sub">per month · up to 1,000 calls</div>
-        <ul class="plan-features">
-          <li>Everything in Essential</li>
-          <li>Up to 1,000 calls per month</li>
-          <li>Feedback and review collection</li>
-          <li>Lapsed customer recovery</li>
-          <li>Fill slow periods automatically</li>
-          <li>Weekly performance reports</li>
-        </ul>
-        <div id="paypal-prestige" style="margin-top:8px"></div>
-        <a href="https://www.paypal.com/subscribe?plan_id=P-3AK97705DF981224CNHZRNYY"
-           id="prestige-fallback" 
-           style="width:100%;padding:13px;background:#C4933A;color:#000;border-radius:10px;font-size:14px;font-weight:600;text-align:center;text-decoration:none;margin-top:8px;display:block"
-           target="_blank">Subscribe with PayPal</a>
-      </div>
-      <div class="plan" style="border-color:rgba(196,147,58,0.4);background:linear-gradient(145deg,#111114,#13120e);position:relative">
-        <div style="position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:linear-gradient(90deg,#C4933A,#d4a840);color:#000;font-size:11px;font-weight:600;padding:3px 16px;border-radius:20px;white-space:nowrap;letter-spacing:0.5px">Best Value</div>
-        <div class="plan-name" style="color:#C4933A">Enterprise</div>
-        <div class="plan-price" style="font-size:36px;padding-top:8px;background:linear-gradient(90deg,#C4933A,#d4a840);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Let's talk</div>
-        <div class="plan-sub">Unlimited calls · fully custom</div>
-        <ul class="plan-features">
-          <li>Everything in Prestige</li>
-          <li>Unlimited calls — no cap ever</li>
-          <li>Multiple locations supported</li>
-          <li>Custom voice and personality</li>
-          <li>Priority 24/7 support</li>
-          <li>Dedicated account manager</li>
-        </ul>
-        <a href="mailto:support@itslexa.com" 
-           class="btn-plan btn-gold"
-           style="background:linear-gradient(90deg,#C4933A,#d4a840);font-weight:600;letter-spacing:0.3px">
-          Contact us for pricing →
-        </a>
-        <div style="font-size:12px;color:#666;text-align:center;margin-top:10px">We will respond within 24 hours</div>
-      </div>
+<div class="sec" id="pricing">
+  <div class="eyebrow fu">Pricing</div>
+  <h2 class="fu">Simple, transparent pricing</h2>
+  <p class="sub fu">14-day free trial on all plans. No credit card required. A full-time receptionist costs over $35,000 a year — Lexa starts at $299.</p>
+  <div class="plans">
+    <div class="plan fu">
+      <div class="plan-tier" style="color:var(--accent)">Essential</div>
+      <div class="plan-price"><sup>$</sup>299</div>
+      <div class="plan-mo">per month · up to 500 calls</div>
+      <div class="plan-calls">$0.35 / call after 500</div>
+      <ul class="plan-feats">
+        <li>Answers every call 24/7</li>
+        <li>Books appointments instantly</li>
+        <li>Remembers customers by name</li>
+        <li>SMS confirmations</li>
+        <li>Owner dashboard</li>
+        <li>Active offer mentions</li>
+        <li>Holiday & hours blocking</li>
+        <li>Google Calendar sync</li>
+      </ul>
+      <a href="https://www.paypal.com/subscribe?plan_id=P-86L265787M100722SNHZRH4Y" class="plan-btn">Subscribe with PayPal</a>
+    </div>
+    <div class="plan featured fu">
+      <div class="plan-pop">MOST POPULAR</div>
+      <div class="plan-tier" style="color:var(--accent)">Prestige</div>
+      <div class="plan-price"><sup>$</sup>499</div>
+      <div class="plan-mo">per month · up to 1,000 calls</div>
+      <div class="plan-calls">$0.35 / call after 1,000</div>
+      <ul class="plan-feats">
+        <li>Everything in Essential</li>
+        <li>VIP customer detection</li>
+        <li>Emotion intelligence</li>
+        <li>Lapsed customer recovery</li>
+        <li>Fill slow periods automatically</li>
+        <li>Feedback & review collection</li>
+        <li>Weekly performance reports</li>
+        <li>Priority support</li>
+      </ul>
+      <a href="https://www.paypal.com/subscribe?plan_id=P-3AK97705DF981224CNHZRNYY" class="plan-btn">Subscribe with PayPal</a>
+    </div>
+    <div class="plan fu">
+      <div class="plan-tier" style="color:var(--accent)">Enterprise</div>
+      <div class="plan-price" style="font-size:28px;letter-spacing:-.5px;padding-top:7px;color:var(--accent)">Let's talk</div>
+      <div class="plan-mo">Unlimited calls · fully custom</div>
+      <div class="plan-calls" style="color:var(--muted)">Bespoke pricing</div>
+      <ul class="plan-feats">
+        <li>Everything in Prestige</li>
+        <li>Unlimited calls — no cap ever</li>
+        <li>Multiple locations supported</li>
+        <li>Custom voice and personality</li>
+        <li>Priority 24/7 support</li>
+        <li>Dedicated account manager</li>
+      </ul>
+      <a href="mailto:support@itslexa.com" class="plan-btn" style="border-color:var(--accent);color:var(--accent)">✉ Email us to get started</a>
     </div>
   </div>
-</section>
+  <p class="plan-note fu">All plans include a 14-day free trial &nbsp;·&nbsp; No credit card required &nbsp;·&nbsp; Cancel any time</p>
+</div>
 
 <!-- TESTIMONIALS -->
-<section>
-  <div class="container">
-    <div class="section-tag">What people say</div>
-    <h2 class="section-title">Trusted by service<br>businesses</h2>
-    <div class="testi-grid" style="margin-top:40px">
-      <div class="testi">
+<div class="sec-full">
+  <div class="sec-in">
+    <div class="eyebrow fu">What owners say</div>
+    <h2 class="fu">Trusted by service<br><em>businesses</em></h2>
+    <div class="testi-grid">
+      <div class="testi fu">
         <div class="testi-stars">★★★★★</div>
-        <p>"I called it and it sounds like a human, not a machine. I was genuinely impressed."</p>
-        <div class="testi-name">Gladys S.</div>
-        <div class="testi-biz">Beta tester</div>
+        <p class="testi-q">"I used to miss 30% of my calls when stylists were busy. Now every call gets answered instantly — and I get a ping to approve each booking."</p>
+        <span class="testi-name">Sarah M.</span>
+        <span class="testi-biz">Salon owner · Austin TX</span>
       </div>
-      <div class="testi">
+      <div class="testi fu">
         <div class="testi-stars">★★★★★</div>
-        <p>"We used to miss 30% of our calls when stylists were busy. Now every call gets answered instantly."</p>
-        <div class="testi-name">Sarah M.</div>
-        <div class="testi-biz">Salon owner, Austin TX</div>
+        <p class="testi-q">"I called it myself first to test. It sounds like a real human. I was genuinely impressed — my patients won't even know it's AI."</p>
+        <span class="testi-name">Dr. James K.</span>
+        <span class="testi-biz">Dental practice · London</span>
       </div>
-      <div class="testi">
+      <div class="testi fu">
         <div class="testi-stars">★★★★★</div>
-        <p>"Set up in 5 minutes and it just works. Lexa even remembered my regular customers from day one."</p>
-        <div class="testi-name">James K.</div>
-        <div class="testi-biz">Dental practice manager</div>
+        <p class="testi-q">"Set up in 5 minutes and it just works. Lexa even remembered my regular customers from day one. The offer feature is brilliant."</p>
+        <span class="testi-name">Marcus T.</span>
+        <span class="testi-biz">Barbershop owner · Chicago</span>
       </div>
     </div>
   </div>
-</section>
+</div>
+
+<!-- FAQ -->
+<div class="sec" style="max-width:760px">
+  <div class="eyebrow fu" style="text-align:center">FAQ</div>
+  <h2 class="fu" style="text-align:center">Common <em>questions</em></h2>
+  <div class="faq-list fu">
+    <div class="faq-item">
+      <button class="faq-q" onclick="faq(this)">Will my customers know they're talking to AI? <span class="faq-icon">+</span></button>
+      <div class="faq-a">Most don't — unless you tell them. Lexa uses a natural ElevenLabs voice and responds in under a second. Whether to disclose is entirely your choice.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="faq(this)">How does the offer feature work? <span class="faq-icon">+</span></button>
+      <div class="faq-a">You add your promotion in the dashboard — for example "20% off haircuts this week." Lexa mentions it once, naturally, when the caller books that service. Pause it and she stops mentioning it immediately.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="faq(this)">What if I'm closed on a specific day? <span class="faq-icon">+</span></button>
+      <div class="faq-a">Mark the date as closed in your dashboard. Lexa will decline bookings for that day politely — "We're actually closed that day — but I have a great slot on Monday the 11th from 9am. Would that work?" — and suggest the next available slot automatically.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="faq(this)">Does every booking need my approval? <span class="faq-icon">+</span></button>
+      <div class="faq-a">Yes — by design. Every booking is held as pending until you tap Confirm in your dashboard. Your customer only gets an SMS confirmation after you approve. You stay in control of your calendar at all times.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="faq(this)">What happens if I go over my call limit? <span class="faq-icon">+</span></button>
+      <div class="faq-a">You're charged $0.35 per additional call — that's it. No service interruption, no sudden plan upgrades. You can watch your usage in real time in the dashboard.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="faq(this)">Is there a contract? <span class="faq-icon">+</span></button>
+      <div class="faq-a">No. Month-to-month. Cancel any time from your dashboard with one click. We're confident Lexa will pay for itself — but we never lock you in.</div>
+    </div>
+  </div>
+</div>
 
 <!-- CTA -->
-<section style="padding:60px 24px 100px">
-  <div class="container">
-    <div class="cta-box">
-      <div class="section-tag" style="margin-bottom:16px">Get started today</div>
-      <h2 class="section-title" style="margin:0 auto 16px;max-width:560px">Never miss another<br>booking again</h2>
-      <p style="font-size:16px;color:#888;margin-bottom:36px">14 days free. No credit card. Set up in 5 minutes.</p>
-      <a href="#" onclick="openModal();return false" class="btn-primary" style="font-size:16px;padding:16px 40px">Start free trial</a>
+<div class="cta-section">
+  <div class="cta-box fu">
+    <div class="cta-glow"></div>
+    <div class="eyebrow" style="margin-bottom:13px">Ready to start?</div>
+    <h2>Never miss another<br><em>booking again</em></h2>
+    <p>14 days free. No credit card. Live in 5 minutes.</p>
+    <div class="cta-btns">
+      <a href="#pricing" class="btn-a">Start free trial →</a>
+      <a href="tel:+13203359845" class="btn-b">📞 Call Lexa: +1 (320) 335-9845</a>
     </div>
   </div>
-</section>
+</div>
 
+<!-- FOOTER -->
 <footer>
-  <div class="logo">lexa<em>.</em></div>
-  <div style="display:flex;gap:24px;flex-wrap:wrap;justify-content:center">
-    <a href="mailto:support@itslexa.com">support@itslexa.com</a>
-    <a href="#pricing">Pricing</a>
-    <a href="https://dashboard.itslexa.com/dashboard">Dashboard</a>
-  </div>
-  <div style="font-size:12px;color:#444">2026 Lexa AI</div>
+  <div class="f-logo">lexa<span class="f-logo-dot">.</span></div>
+  <ul class="f-links">
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="https://dashboard.itslexa.com">Dashboard</a></li>
+    <li><a href="mailto:support@itslexa.com">support@itslexa.com</a></li>
+  </ul>
+  <div class="f-copy">© 2026 itslexa.com</div>
 </footer>
 
-<!-- ONBOARDING MODAL -->
-<div class="modal-bg" id="modal">
-<div class="modal">
-  <div class="modal-top"></div>
-  <div class="modal-body">
-    <div class="steps-bar">
-      <div class="step-dot done" id="d1"></div>
-      <div class="step-dot" id="d2"></div>
-      <div class="step-dot" id="d3"></div>
-      <div class="step-dot" id="d4"></div>
-    </div>
-
-    <!-- STEP 1: Contact -->
-    <div id="s1">
-      <h2>Start your free trial</h2>
-      <p class="modal-sub">14 days free — no credit card needed</p>
-      <label class="form-label">Your full name</label>
-      <input class="form-input" id="f-name" placeholder="e.g. Sarah Johnson">
-      <label class="form-label">Email address</label>
-      <input class="form-input" id="f-email" type="email" placeholder="you@yourbusiness.com">
-      <label class="form-label">Mobile number</label>
-      <input class="form-input" id="f-mobile" type="tel" placeholder="+1 (555) 000 0000">
-      <button class="btn-next" onclick="goStep(2)">Continue</button>
-    </div>
-
-    <!-- STEP 2: Business -->
-    <div id="s2" style="display:none">
-      <h2>Your business</h2>
-      <p class="modal-sub">Tell us about your business so we can set up Lexa</p>
-      <label class="form-label">Business name</label>
-      <input class="form-input" id="f-bname" placeholder="e.g. Bella Salon Austin">
-      <label class="form-label">Business phone number</label>
-      <input class="form-input" id="f-bphone" type="tel" placeholder="+1 (555) 000 0000">
-      <label class="form-label">Business website (optional)</label>
-      <input class="form-input" id="f-website" placeholder="www.yourbusiness.com">
-      <label class="form-label">Business address</label>
-      <input class="form-input" id="f-address" placeholder="123 Main St, Austin, Texas">
-      <button class="btn-next" onclick="goStep(3)">Continue</button>
-      <button class="btn-back" onclick="goStep(1)">Back</button>
-    </div>
-
-    <!-- STEP 3: Industry -->
-    <div id="s3" style="display:none">
-      <h2>Your industry</h2>
-      <p class="modal-sub">Lexa will specialise her knowledge for your business type</p>
-      <div class="ind-grid">
-        <button class="ind-btn" onclick="selInd(this,'Hair Salon')">Hair Salon</button>
-        <button class="ind-btn" onclick="selInd(this,'Dental Clinic')">Dental Clinic</button>
-        <button class="ind-btn" onclick="selInd(this,'Spa / Wellness')">Spa / Wellness</button>
-        <button class="ind-btn" onclick="selInd(this,'Nail Bar')">Nail Bar</button>
-        <button class="ind-btn" onclick="selInd(this,'Fitness Studio')">Fitness Studio</button>
-        <button class="ind-btn" onclick="selInd(this,'Veterinary')">Veterinary</button>
-        <button class="ind-btn" onclick="selInd(this,'Physiotherapy')">Physiotherapy</button>
-        <button class="ind-btn" onclick="selInd(this,'Optometrist')">Optometrist</button>
-        <button class="ind-btn" onclick="selInd(this,'Home Services')">Home Services</button>
-        <button class="ind-btn" onclick="selInd(this,'Other')">Other</button>
-      </div>
-      <label class="form-label">Your services (comma separated)</label>
-      <input class="form-input" id="f-services" placeholder="e.g. Haircut, Highlights, Balayage, Blowout">
-      <label class="form-label">Opening hours</label>
-      <input class="form-input" id="f-hours" placeholder="e.g. Mon-Sat 9am-6pm, Closed Sunday">
-      <button class="btn-next" onclick="goStep(4)">Continue</button>
-      <button class="btn-back" onclick="goStep(2)">Back</button>
-    </div>
-
-    <!-- STEP 4: Done -->
-    <div id="s4" style="display:none;text-align:center">
-      <div class="success-icon">🎉</div>
-      <h2 style="margin-bottom:8px">You are all set!</h2>
-      <p class="modal-sub" style="margin-bottom:24px">Your 14-day free trial has started. We will email you setup instructions within 5 minutes.</p>
-      <div style="background:#111115;border:0.5px solid var(--border);border-radius:10px;padding:16px;margin-bottom:20px;text-align:left">
-        <div style="font-size:12px;color:#666;margin-bottom:8px">NEXT STEPS</div>
-        <div style="font-size:13px;color:#aaa;line-height:2">
-          1. Check your email for setup instructions<br>
-          2. Forward your business number to Lexa<br>
-          3. Make a test call to hear Lexa in action<br>
-          4. Go live and never miss a booking again
-        </div>
-      </div>
-      <a href="https://dashboard.itslexa.com/dashboard" class="btn-next" style="display:block;text-decoration:none">Go to dashboard</a>
-      <div style="font-size:12px;color:#555;margin-top:12px">Questions? Email support@itslexa.com</div>
-    </div>
-
-  </div>
-</div>
-</div>
-
 <script>
-let selectedPlan = 'Prestige';
-let selectedIndustry = '';
+// Nav
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('solid',scrollY>20))
 
-function openModal(plan) {
-  if(plan) selectedPlan = plan;
-  document.getElementById('modal').classList.add('open');
+// FAQ
+function faq(btn){
+  const item=btn.closest('.faq-item')
+  const open=item.classList.contains('open')
+  document.querySelectorAll('.faq-item.open').forEach(i=>i.classList.remove('open'))
+  if(!open) item.classList.add('open')
 }
 
-function closeModal() {
-  document.getElementById('modal').classList.remove('open');
-}
-
-document.getElementById('modal').addEventListener('click', function(e){
-  if(e.target===this) closeModal();
-});
-
-function goStep(n) {
-  // Validate
-  if(n===2) {
-    const name = document.getElementById('f-name').value.trim();
-    const email = document.getElementById('f-email').value.trim();
-    const mobile = document.getElementById('f-mobile').value.trim();
-    if(!name||!email||!mobile){alert('Please fill in all fields');return;}
-  }
-  if(n===3) {
-    const bname = document.getElementById('f-bname').value.trim();
-    const bphone = document.getElementById('f-bphone').value.trim();
-    if(!bname||!bphone){alert('Please fill in business name and phone');return;}
-  }
-  if(n===4) {
-    if(!selectedIndustry){alert('Please select your industry');return;}
-    submitLead();
-  }
-  for(let i=1;i<=4;i++) {
-    document.getElementById('s'+i).style.display = i===n?'block':'none';
-    document.getElementById('d'+i).classList.toggle('done', i<=n);
-  }
-}
-
-function selInd(el, val) {
-  document.querySelectorAll('.ind-btn').forEach(b=>b.classList.remove('selected'));
-  el.classList.add('selected');
-  selectedIndustry = val;
-}
-
-async function submitLead() {
-  const data = {
-    name: document.getElementById('f-name').value.trim(),
-    email: document.getElementById('f-email').value.trim(),
-    mobile: document.getElementById('f-mobile').value.trim(),
-    business_name: document.getElementById('f-bname').value.trim(),
-    business_phone: document.getElementById('f-bphone').value.trim(),
-    website: document.getElementById('f-website').value.trim(),
-    address: document.getElementById('f-address').value.trim(),
-    industry: selectedIndustry,
-    services: document.getElementById('f-services').value.trim(),
-    hours: document.getElementById('f-hours').value.trim(),
-    plan: selectedPlan
-  };
-  try {
-    await fetch('https://dashboard.itslexa.com/api/new-lead', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(data)
-    });
-  } catch(e) {}
-}
-</script>
-
-<!-- PAYPAL -->
-<script 
-  src="https://www.paypal.com/sdk/js?client-id=ASp1-ctl_qzOlNrYjvQclFvz46G_lPPdM1S7SeyBPSRn-DEtzSHWu7xphw2q6vm0hXPqE_UdZNY0tuS-&vault=true&intent=subscription"
-  onload="initPayPal()"
-></script>
-<script>
-// Show fallback buttons after 4s if PayPal not loaded
-setTimeout(function(){
-  if(typeof paypal === 'undefined'){
-    document.getElementById('essential-fallback').style.display='block';
-    document.getElementById('prestige-fallback').style.display='block';
-  }
-}, 4000);
-
-function initPayPal() {
-  renderPayPal('paypal-essential', 'P-86L265787M100722SNHZRH4Y');
-  renderPayPal('paypal-prestige', 'P-3AK97705DF981224CNHZRNYY');
-}
-function renderPayPal(containerId, planId) {
-  paypal.Buttons({
-    style: {
-      shape: 'rect',
-      color: 'gold',
-      layout: 'vertical',
-      label: 'subscribe',
-      height: 45
-    },
-    createSubscription: function(data, actions) {
-      return actions.subscription.create({ plan_id: planId });
-    },
-    onApprove: function(data, actions) {
-      // Save subscription
-      fetch('https://dashboard.itslexa.com/api/new-subscription', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          subscription_id: data.subscriptionID,
-          plan_id: planId
-        })
-      });
-      // Show success
-      document.getElementById('modal').classList.add('open');
-      document.getElementById('s1').style.display = 'none';
-      document.getElementById('s2').style.display = 'none';
-      document.getElementById('s3').style.display = 'none';
-      document.getElementById('s4').style.display = 'block';
-    },
-    onError: function(err) {
-      alert('Payment error. Please try again or contact support@itslexa.com');
-    }
-  }).render('#' + containerId);
-}
-
-// Rendered via onload above
+// Reveal
+const obs=new IntersectionObserver(entries=>entries.forEach((e,i)=>{
+  if(e.isIntersecting) setTimeout(()=>e.target.classList.add('v'),i*45)
+}),{threshold:.1})
+document.querySelectorAll('.fu').forEach(el=>obs.observe(el))
 </script>
 </body>
 </html>
