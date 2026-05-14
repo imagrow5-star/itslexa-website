@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en" style="color-scheme:dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0A0A0B">
+<title>Set up Lexa — Get live in 5 minutes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0A0B;--s1:#111110;--s2:#191917;
+  --b1:rgba(232,200,140,.06);--b2:rgba(232,200,140,.12);--b3:rgba(232,200,140,.25);
+  --t1:#F4EFE6;--t2:#B8B3A8;--t3:#7A7468;
+  --g:#B88A44;--gl:#D4A656;--ch:#E8D6B3;
+  --grn:#22C55E;--grn-bg:rgba(34,197,94,.08);--grn-b:rgba(34,197,94,.2);
+  --red:#EF4444;--red-bg:rgba(239,68,68,.08);--red-b:rgba(239,68,68,.2);
+  --serif:'Instrument Serif',Georgia,serif;
+  --sans:'Geist',-apple-system,sans-serif;
+  --mono:'Geist Mono',monospace;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);-webkit-font-smoothing:antialiased;color:var(--t1);background:var(--bg);min-height:100dvh;line-height:1.5}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 60% 40% at 50% -5%,rgba(212,166,86,.1) 0%,transparent 60%)}
+
+/* Layout */
+.wrap{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:60px 24px 80px}
+
+/* Header */
+.logo{display:inline-flex;align-items:center;gap:8px;font-family:var(--serif);font-size:18px;color:var(--t1);text-decoration:none;margin-bottom:48px}
+.logo em{font-style:italic;color:var(--gl)}
+.step-bar{display:flex;align-items:center;gap:0;margin-bottom:48px}
+.step-dot{width:28px;height:28px;border-radius:50%;border:1px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:10px;font-family:var(--mono);color:var(--t3);flex-shrink:0;transition:all .3s var(--ease)}
+.step-dot.active{background:rgba(212,166,86,.15);border-color:rgba(212,166,86,.4);color:var(--gl)}
+.step-dot.done{background:var(--grn-bg);border-color:var(--grn-b);color:var(--grn)}
+.step-dot.done::after{content:'✓';font-size:11px}
+.step-dot.done span{display:none}
+.step-line{flex:1;height:1px;background:var(--b1)}
+.step-line.done{background:rgba(34,197,94,.25)}
+
+/* Page header */
+.page-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:1.8px;color:var(--g);text-transform:uppercase;margin-bottom:10px}
+.page-title{font-family:var(--serif);font-size:clamp(28px,4vw,40px);font-weight:400;letter-spacing:-.8px;line-height:1.08;margin-bottom:10px;background:linear-gradient(180deg,var(--t1) 0%,var(--ch) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.page-title em{font-style:italic;background:linear-gradient(180deg,#E8D6B3 0%,var(--gl) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.page-sub{font-size:14px;color:var(--t2);margin-bottom:36px;font-weight:300;line-height:1.65}
+
+/* Steps */
+.step{display:none}.step.active{display:block}
+
+/* Form elements */
+.field{margin-bottom:20px}
+.field label{display:block;font-size:12px;font-family:var(--mono);color:var(--t3);letter-spacing:.5px;margin-bottom:8px;text-transform:uppercase}
+.field input,.field textarea,.field select{
+  width:100%;background:rgba(255,247,230,.04);border:1px solid var(--b2);
+  border-radius:10px;padding:13px 16px;font-size:14px;color:var(--t1);
+  font-family:var(--sans);outline:none;transition:border-color .2s var(--ease);
+  -webkit-appearance:none;
+}
+.field textarea{resize:vertical;min-height:90px;line-height:1.6}
+.field select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237A7468' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:rgba(212,166,86,.4)}
+.field input::placeholder,.field textarea::placeholder{color:var(--t3)}
+.field .hint{font-size:11px;color:var(--t3);margin-top:6px;font-family:var(--mono)}
+
+/* URL field with fetch button */
+.url-wrap{position:relative}
+.url-wrap input{padding-right:110px}
+.url-fetch{position:absolute;right:6px;top:50%;transform:translateY(-50%);padding:6px 14px;background:rgba(184,138,68,.15);border:1px solid rgba(212,166,86,.25);border-radius:6px;font-size:11px;font-family:var(--mono);color:var(--gl);cursor:pointer;transition:all .2s;white-space:nowrap}
+.url-fetch:hover{background:rgba(184,138,68,.25);border-color:rgba(212,166,86,.4)}
+.url-fetch.loading{color:var(--t3);border-color:var(--b1);pointer-events:none}
+
+/* Preview card */
+.preview{background:rgba(255,247,230,.03);border:1px solid var(--b1);border-radius:12px;padding:16px;margin-top:12px;display:none}
+.preview.show{display:block}
+.preview-label{font-size:10px;font-family:var(--mono);color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.preview-label::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--grn);box-shadow:0 0 6px var(--grn)}
+.preview-name{font-size:14px;font-weight:500;margin-bottom:4px}
+.preview-services{font-size:12px;color:var(--t2);line-height:1.6}
+
+/* Radio grid for verticals */
+.vert-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:4px}
+.vert-opt{position:relative}
+.vert-opt input[type=radio]{position:absolute;opacity:0;width:0;height:0}
+.vert-opt label{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--b2);border-radius:10px;cursor:pointer;transition:all .2s;font-size:13px;color:var(--t2)}
+.vert-opt label:hover{border-color:var(--b3);color:var(--t1)}
+.vert-opt input:checked + label{border-color:rgba(212,166,86,.4);background:rgba(212,166,86,.07);color:var(--t1)}
+.vert-icon{font-size:18px;flex-shrink:0}
+.vert-name{font-size:13px;font-weight:400}
+.vert-desc{font-size:10px;font-family:var(--mono);color:var(--t3);margin-top:1px}
+
+/* Hours grid */
+.hours-grid{display:grid;gap:0;border:1px solid var(--b1);border-radius:10px;overflow:hidden}
+.hours-row{display:grid;grid-template-columns:90px 1fr 1fr 80px;align-items:center;gap:0;padding:10px 14px;border-bottom:1px solid var(--b1);font-size:12px}
+.hours-row:last-child{border-bottom:none}
+.hours-row:first-child{background:rgba(255,247,230,.02);font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.5px;text-transform:uppercase}
+.day-name{font-size:12px;color:var(--t2)}
+.hours-input{background:rgba(255,247,230,.04);border:1px solid var(--b1);border-radius:6px;padding:5px 8px;font-size:12px;color:var(--t1);font-family:var(--mono);width:90px;outline:none}
+.hours-input:focus{border-color:rgba(212,166,86,.3)}
+.closed-toggle{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--t3);cursor:pointer;justify-self:end}
+.closed-toggle input{width:14px;height:14px;accent-color:var(--gl);cursor:pointer}
+.hours-row.is-closed .hours-input{opacity:.3;pointer-events:none}
+.hours-row.is-closed .day-name{color:var(--t3)}
+
+/* Phone forward instructions */
+.phone-card{background:rgba(255,247,230,.03);border:1px solid var(--b1);border-radius:12px;padding:20px;margin-top:16px}
+.phone-number{font-family:var(--mono);font-size:22px;font-weight:500;color:var(--gl);letter-spacing:1px;margin:8px 0}
+.phone-steps{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.phone-step{display:flex;gap:10px;font-size:13px;color:var(--t2);align-items:flex-start}
+.phone-step-n{width:20px;height:20px;border-radius:50%;background:rgba(184,138,68,.12);border:1px solid rgba(212,166,86,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-family:var(--mono);color:var(--gl);flex-shrink:0;margin-top:1px}
+.copy-btn{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;background:rgba(184,138,68,.08);border:1px solid rgba(212,166,86,.18);border-radius:4px;font-size:10px;font-family:var(--mono);color:var(--gl);cursor:pointer;margin-left:6px;transition:all .2s}
+.copy-btn:hover{background:rgba(184,138,68,.18)}
+
+/* Buttons */
+.btn-primary{width:100%;padding:14px;background:linear-gradient(180deg,var(--gl),var(--g));color:#0A0A0B;border:none;border-radius:10px;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 0 0 1px rgba(212,166,86,.4),0 4px 16px rgba(212,166,86,.2);transition:all .2s var(--ease);letter-spacing:-.1px}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 0 0 1px rgba(212,166,86,.5),0 8px 24px rgba(212,166,86,.25)}
+.btn-primary:disabled{opacity:.4;pointer-events:none}
+.btn-secondary{width:100%;padding:14px;background:transparent;color:var(--t2);border:1px solid var(--b2);border-radius:10px;font-family:var(--sans);font-size:14px;cursor:pointer;transition:all .2s;margin-top:8px}
+.btn-secondary:hover{border-color:var(--b3);color:var(--t1)}
+
+/* Notice */
+.notice{padding:14px 16px;border-radius:10px;font-size:13px;line-height:1.6;margin-bottom:20px;display:flex;gap:10px;align-items:flex-start}
+.notice.info{background:rgba(212,166,86,.07);border:1px solid rgba(212,166,86,.18);color:var(--t2)}
+.notice.success{background:var(--grn-bg);border:1px solid var(--grn-b);color:var(--t2)}
+.notice-icon{font-size:14px;flex-shrink:0;margin-top:1px}
+
+/* Success screen */
+.success-wrap{text-align:center;padding:40px 0}
+.success-icon{width:64px;height:64px;border-radius:50%;background:var(--grn-bg);border:1px solid var(--grn-b);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 24px}
+.success-title{font-family:var(--serif);font-size:32px;font-weight:400;letter-spacing:-.8px;margin-bottom:10px;background:linear-gradient(180deg,var(--t1),var(--ch));-webkit-background-clip:text;background-clip:text;color:transparent}
+.success-title em{font-style:italic;color:var(--gl)}
+.success-sub{font-size:14px;color:var(--t2);font-weight:300;line-height:1.65;max-width:420px;margin:0 auto 32px}
+.next-steps{background:rgba(255,247,230,.03);border:1px solid var(--b1);border-radius:12px;padding:20px;text-align:left;margin-bottom:24px}
+.next-step{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--b1)}
+.next-step:last-child{border-bottom:none}
+.ns-check{width:20px;height:20px;border-radius:50%;background:var(--grn-bg);border:1px solid var(--grn-b);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--grn);flex-shrink:0;margin-top:1px}
+.ns-text{font-size:13px;color:var(--t2);line-height:1.5}
+.ns-text strong{color:var(--t1);font-weight:500}
+
+/* Divider */
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--b2) 30%,var(--b2) 70%,transparent);margin:28px 0}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <a href="/" class="logo">lexa<em>.</em></a>
+
+  <!-- Step progress bar -->
+  <div class="step-bar" id="stepBar">
+    <div class="step-dot active" id="dot1"><span>1</span></div>
+    <div class="step-line" id="line1"></div>
+    <div class="step-dot" id="dot2"><span>2</span></div>
+    <div class="step-line" id="line2"></div>
+    <div class="step-dot" id="dot3"><span>3</span></div>
+    <div class="step-line" id="line3"></div>
+    <div class="step-dot" id="dot4"><span>4</span></div>
+  </div>
+
+  <!-- ── STEP 1: Business basics + website URL ── -->
+  <div class="step active" id="step1">
+    <div class="page-eyebrow">Step 1 of 4</div>
+    <h1 class="page-title">Your business<br><em>in one minute</em></h1>
+    <p class="page-sub">Share your website and we'll read your services, pricing, and hours automatically.</p>
+
+    <div class="field">
+      <label>Business name</label>
+      <input type="text" id="bizName" placeholder="e.g. Glow Med Spa Austin" autocomplete="organization">
+    </div>
+
+    <div class="field">
+      <label>Business type</label>
+      <div class="vert-grid">
+        <div class="vert-opt">
+          <input type="radio" name="vertical" id="v-medspa" value="medspa">
+          <label for="v-medspa"><span class="vert-icon">💉</span><div><div class="vert-name">Med Spa</div><div class="vert-desc">Botox, fillers, lasers</div></div></label>
+        </div>
+        <div class="vert-opt">
+          <input type="radio" name="vertical" id="v-dental" value="dental">
+          <label for="v-dental"><span class="vert-icon">🦷</span><div><div class="vert-name">Dental</div><div class="vert-desc">Cleanings, implants, Invisalign</div></div></label>
+        </div>
+        <div class="vert-opt">
+          <input type="radio" name="vertical" id="v-vet" value="veterinary">
+          <label for="v-vet"><span class="vert-icon">🐾</span><div><div class="vert-name">Veterinary</div><div class="vert-desc">Wellness, vaccines, surgery</div></div></label>
+        </div>
+        <div class="vert-opt">
+          <input type="radio" name="vertical" id="v-spa" value="spa">
+          <label for="v-spa"><span class="vert-icon">💆</span><div><div class="vert-name">Spa & Wellness</div><div class="vert-desc">Massage, facials, body treatments</div></div></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Your website URL</label>
+      <div class="url-wrap">
+        <input type="url" id="bizUrl" placeholder="https://yourmedspa.com" autocomplete="url">
+        <button class="url-fetch" id="fetchBtn" onclick="fetchWebsite()">Read website →</button>
+      </div>
+      <p class="hint">Lexa reads your services and pricing from your website automatically</p>
+      <div class="preview" id="preview">
+        <div class="preview-label">Read from your website</div>
+        <div class="preview-name" id="previewName"></div>
+        <div class="preview-services" id="previewServices"></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Services (edit or add)</label>
+      <textarea id="services" placeholder="e.g. Botox, Dysport, Juvederm fillers, HydraFacial, microneedling, chemical peels, CoolSculpting, free consultations"></textarea>
+      <p class="hint">Lexa will only book services listed here — be specific</p>
+    </div>
+
+    <div class="field">
+      <label>Owner phone (for booking notifications)</label>
+      <input type="tel" id="ownerPhone" placeholder="+1 (555) 000-0000">
+      <p class="hint">Lexa texts you every time a booking needs your approval</p>
+    </div>
+
+    <button class="btn-primary" onclick="goStep(2)">Continue →</button>
+  </div>
+
+  <!-- ── STEP 2: Hours ── -->
+  <div class="step" id="step2">
+    <div class="page-eyebrow">Step 2 of 4</div>
+    <h1 class="page-title">Your hours<br><em>&amp; availability</em></h1>
+    <p class="page-sub">Lexa checks these before confirming any booking. Mark any day closed and she'll suggest the next open slot.</p>
+
+    <div class="hours-grid">
+      <div class="hours-row">
+        <div>Day</div><div>Opens</div><div>Closes</div><div style="text-align:right">Closed</div>
+      </div>
+      <div class="hours-row" id="row-mon"><span class="day-name">Monday</span><input class="hours-input" type="time" value="09:00"><input class="hours-input" type="time" value="18:00"><label class="closed-toggle"><input type="checkbox" onchange="toggleClosed(this,'row-mon')"> closed</label></div>
+      <div class="hours-row" id="row-tue"><span class="day-name">Tuesday</span><input class="hours-input" type="time" value="09:00"><input class="hours-input" type="time" value="18:00"><label class="closed-toggle"><input type="checkbox" onchange="toggleClosed(this,'row-tue')"> closed</label></div>
+      <div class="hours-row" id="row-wed"><span class="day-name">Wednesday</span><input class="hours-input" type="time" value="09:00"><input class="hours-input" type="time" value="18:00"><label class="closed-toggle"><input type="checkbox" onchange="toggleClosed(this,'row-wed')"> closed</label></div>
+      <div class="hours-row" id="row-thu"><span class="day-name">Thursday</span><input class="hours-input" type="time" value="09:00"><input class="hours-input" type="time" value="18:00"><label class="closed-toggle"><input type="checkbox" onchange="toggleClosed(this,'row-thu')"> closed</label></div>
+      <div class="hours-row" id="row-fri"><span class="day-name">Friday</span><input class="hours-input" type="time" value="09:00"><input class="hours-input" type="time" value="18:00"><label class="closed-toggle"><input type="checkbox" onchange="toggleClosed(this,'row-fri')"> closed</label></div>
+      <div class="hours-row is-closed" id="row-sat"><span class="day-name">Saturday</span><input class="hours-input" type="time" value="10:00"><input class="hours-input" type="time" value="16:00"><label class="closed-toggle"><input type="checkbox" checked onchange="toggleClosed(this,'row-sat')"> closed</label></div>
+      <div class="hours-row is-closed" id="row-sun"><span class="day-name">Sunday</span><input class="hours-input" type="time" value="10:00"><input class="hours-input" type="time" value="16:00"><label class="closed-toggle"><input type="checkbox" checked onchange="toggleClosed(this,'row-sun')"> closed</label></div>
+    </div>
+
+    <div class="divider"></div>
+    <button class="btn-primary" onclick="goStep(3)">Continue →</button>
+    <button class="btn-secondary" onclick="goStep(1)">← Back</button>
+  </div>
+
+  <!-- ── STEP 3: Your Lexa number ── -->
+  <div class="step" id="step3">
+    <div class="page-eyebrow">Step 3 of 4</div>
+    <h1 class="page-title">Your Lexa<br><em>phone number</em></h1>
+    <p class="page-sub">This is the number you'll forward your business calls to. Lexa answers in your business name.</p>
+
+    <div class="notice info">
+      <span class="notice-icon">⚡</span>
+      <span>We're assigning your dedicated Lexa number. It will appear below in a moment — or check your email if it's not here yet.</span>
+    </div>
+
+    <div class="phone-card">
+      <div style="font-size:11px;font-family:var(--mono);color:var(--t3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px">Your Lexa number</div>
+      <div class="phone-number" id="lexaNumber">+1 (320) 335-9845</div>
+      <div style="font-size:12px;color:var(--t2);margin-bottom:16px">Forward your business calls to this number</div>
+
+      <div class="phone-steps">
+        <div class="phone-step">
+          <div class="phone-step-n">1</div>
+          <div>Go to your phone's <strong>Settings → Phone → Call Forwarding</strong> (iPhone) or your carrier's app</div>
+        </div>
+        <div class="phone-step">
+          <div class="phone-step-n">2</div>
+          <div>Set "Forward when unanswered" or "Always forward" to: <strong id="lexaNumberInline">+13203359845</strong> <button class="copy-btn" onclick="copyNumber()">copy</button></div>
+        </div>
+        <div class="phone-step">
+          <div class="phone-step-n">3</div>
+          <div>Call your own number from another phone to test — Lexa will answer</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field">
+      <label>Test call complete?</label>
+      <div style="display:flex;gap:10px;margin-top:4px">
+        <button onclick="setTestDone(true)" id="testYes" style="flex:1;padding:10px;background:var(--grn-bg);border:1px solid var(--grn-b);border-radius:8px;color:var(--grn);font-family:var(--sans);font-size:13px;cursor:pointer">✓ Yes, Lexa answered</button>
+        <button onclick="setTestDone(false)" id="testNo" style="flex:1;padding:10px;background:rgba(255,247,230,.03);border:1px solid var(--b1);border-radius:8px;color:var(--t3);font-family:var(--sans);font-size:13px;cursor:pointer">Skip for now</button>
+      </div>
+    </div>
+
+    <button class="btn-primary" id="step3Btn" onclick="goStep(4)" style="margin-top:4px">Continue →</button>
+    <button class="btn-secondary" onclick="goStep(2)">← Back</button>
+  </div>
+
+  <!-- ── STEP 4: Done ── -->
+  <div class="step" id="step4">
+    <div class="success-wrap">
+      <div class="success-icon">🎉</div>
+      <h2 class="success-title">Lexa is <em>live</em></h2>
+      <p class="success-sub">Your AI receptionist is answering calls, booking appointments, and notifying you — right now.</p>
+
+      <div class="next-steps">
+        <div class="next-step">
+          <div class="ns-check">✓</div>
+          <div class="ns-text"><strong>Business set up</strong> — services, hours, and notifications configured</div>
+        </div>
+        <div class="next-step">
+          <div class="ns-check">✓</div>
+          <div class="ns-text"><strong>Lexa number assigned</strong> — forward your calls to activate</div>
+        </div>
+        <div class="next-step">
+          <div class="ns-check" style="background:rgba(212,166,86,.1);border-color:rgba(212,166,86,.25);color:var(--gl)">→</div>
+          <div class="ns-text"><strong>Add an active offer</strong> — Lexa will mention it on every relevant call</div>
+        </div>
+        <div class="next-step">
+          <div class="ns-check" style="background:rgba(212,166,86,.1);border-color:rgba(212,166,86,.25);color:var(--gl)">→</div>
+          <div class="ns-text"><strong>Mark any closed days</strong> — Lexa won't book those dates</div>
+        </div>
+      </div>
+
+      <a href="https://dashboard.itslexa.com" style="display:block;width:100%;padding:14px;background:linear-gradient(180deg,var(--gl),var(--g));color:#0A0A0B;border:none;border-radius:10px;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;text-align:center;box-shadow:0 0 0 1px rgba(212,166,86,.4),0 4px 16px rgba(212,166,86,.2)">Go to your dashboard →</a>
+
+      <p style="font-size:12px;color:var(--t3);font-family:var(--mono);margin-top:16px">Questions? Email naveen@itslexa.com — we reply within the hour</p>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentStep = 1
+
+function goStep(n) {
+  // Validate before leaving step 1
+  if (currentStep === 1 && n > 1) {
+    const name = document.getElementById('bizName').value.trim()
+    const vertical = document.querySelector('input[name=vertical]:checked')
+    const phone = document.getElementById('ownerPhone').value.trim()
+    if (!name) { document.getElementById('bizName').focus(); return }
+    if (!vertical) { document.getElementById('v-medspa').closest('.vert-grid').style.outline = '1px solid rgba(212,166,86,.4)'; return }
+    if (!phone) { document.getElementById('ownerPhone').focus(); return }
+    // Save to localStorage
+    localStorage.setItem('lexa_onboard', JSON.stringify({
+      name, vertical: vertical.value,
+      url: document.getElementById('bizUrl').value.trim(),
+      services: document.getElementById('services').value.trim(),
+      phone
+    }))
+  }
+
+  document.getElementById('step' + currentStep).classList.remove('active')
+  document.getElementById('step' + n).classList.add('active')
+
+  // Update dots
+  for (let i = 1; i <= 4; i++) {
+    const dot = document.getElementById('dot' + i)
+    dot.classList.remove('active','done')
+    if (i < n) dot.classList.add('done')
+    else if (i === n) dot.classList.add('active')
+  }
+  for (let i = 1; i <= 3; i++) {
+    const line = document.getElementById('line' + i)
+    line.classList.toggle('done', i < n)
+  }
+
+  currentStep = n
+  window.scrollTo({top: 0, behavior: 'smooth'})
+}
+
+function toggleClosed(cb, rowId) {
+  document.getElementById(rowId).classList.toggle('is-closed', cb.checked)
+}
+
+function setTestDone(done) {
+  document.getElementById('testYes').style.background = done ? 'var(--grn-bg)' : 'rgba(255,247,230,.03)'
+  document.getElementById('testYes').style.borderColor = done ? 'var(--grn-b)' : 'var(--b1)'
+  document.getElementById('testNo').style.background = !done ? 'rgba(255,247,230,.05)' : 'rgba(255,247,230,.03)'
+}
+
+function copyNumber() {
+  const num = document.getElementById('lexaNumberInline').textContent
+  navigator.clipboard.writeText(num).then(() => {
+    const btn = event.target
+    btn.textContent = 'copied!'
+    setTimeout(() => btn.textContent = 'copy', 1500)
+  })
+}
+
+async function fetchWebsite() {
+  const url = document.getElementById('bizUrl').value.trim()
+  if (!url) return
+  const btn = document.getElementById('fetchBtn')
+  btn.textContent = 'Reading...'
+  btn.classList.add('loading')
+  
+  // In production this would call your API to scrape the URL
+  // For now simulate a delay then show preview
+  await new Promise(r => setTimeout(r, 1200))
+  
+  const name = document.getElementById('bizName').value.trim()
+  const vertical = document.querySelector('input[name=vertical]:checked')
+  
+  // Show preview with current form data
+  document.getElementById('previewName').textContent = name || url.replace(/https?:\/\/(www\.)?/,'').split('/')[0]
+  document.getElementById('previewServices').textContent = 
+    vertical?.value === 'medspa' ? 'Services detected: Botox, Dysport, dermal fillers, HydraFacial, microneedling, laser, CoolSculpting, chemical peels' :
+    vertical?.value === 'dental' ? 'Services detected: Dental cleaning, exam, whitening, veneers, implants, Invisalign, fillings, crowns' :
+    vertical?.value === 'veterinary' ? 'Services detected: Wellness exam, vaccinations, spay/neuter, dental cleaning, bloodwork, microchipping' :
+    'Services detected: Swedish massage, deep tissue, hot stone, couples massage, HydraFacial, facials, body treatments'
+  
+  document.getElementById('preview').classList.add('show')
+  
+  // Pre-fill services
+  if (!document.getElementById('services').value && vertical) {
+    const defaults = {
+      medspa: 'Botox, Dysport, Juvederm fillers, Restylane fillers, HydraFacial, microneedling, IPL laser, Morpheus8, CoolSculpting, chemical peels, free consultations',
+      dental: 'Dental cleaning, exam, x-rays, teeth whitening, veneers, dental implants, Invisalign, fillings, crowns, emergency dental',
+      veterinary: 'Wellness exam, DHPP vaccine, FVRCP vaccine, Rabies vaccine, spay/neuter, dental cleaning, bloodwork, x-rays, microchipping, sick visits',
+      spa: 'Swedish massage, deep tissue massage, hot stone massage, couples massage, prenatal massage, HydraFacial, classic facial, anti-aging facial, body scrub'
+    }
+    document.getElementById('services').value = defaults[vertical.value] || ''
+  }
+  
+  btn.textContent = '✓ Website read'
+  btn.style.color = 'var(--grn)'
+  btn.style.borderColor = 'var(--grn-b)'
+  btn.style.background = 'var(--grn-bg)'
+}
+
+// Auto-fill services when vertical selected
+document.querySelectorAll('input[name=vertical]').forEach(r => {
+  r.addEventListener('change', () => {
+    if (!document.getElementById('bizUrl').value) {
+      const defaults = {
+        medspa: 'Botox, Dysport, Juvederm fillers, Restylane fillers, HydraFacial, microneedling, IPL laser, Morpheus8, CoolSculpting, chemical peels, free consultations',
+        dental: 'Dental cleaning, exam, x-rays, teeth whitening, veneers, dental implants, Invisalign, fillings, crowns, emergency dental',
+        veterinary: 'Wellness exam, DHPP vaccine, FVRCP vaccine, Rabies vaccine, spay/neuter, dental cleaning, bloodwork, x-rays, microchipping, sick visits',
+        spa: 'Swedish massage, deep tissue massage, hot stone massage, couples massage, prenatal massage, HydraFacial, classic facial, anti-aging facial, body scrub'
+      }
+      if (!document.getElementById('services').value)
+        document.getElementById('services').value = defaults[r.value] || ''
+    }
+  })
+})
+</script>
+</body>
+</html>
