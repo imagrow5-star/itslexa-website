@@ -217,7 +217,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
       <p class="hint">Lexa texts you every time a booking needs your approval</p>
     </div>
 
-    <button class="btn-primary" onclick="goStep(2)">Continue →</button>
+    <button class="btn-primary" onclick="submitAndContinue()">Set up Lexa →</button>
   </div>
 
   <!-- ── STEP 2: Hours ── -->
@@ -316,6 +316,15 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
         </div>
       </div>
 
+      
+      <!-- PayPal subscription after 14-day trial -->
+      <div style="margin-top:16px;padding:16px;background:rgba(255,247,230,.03);border:1px solid var(--b1);border-radius:10px;text-align:left">
+        <div style="font-size:11px;font-family:var(--mono);color:var(--t3);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px">After your 14-day free trial</div>
+        <div style="display:flex;gap:8px">
+          <a href="https://www.paypal.com/subscribe?plan_id=P-86L265787M100722SNHZRH4Y" style="flex:1;padding:10px;background:rgba(255,247,230,.03);border:1px solid var(--b2);border-radius:8px;font-size:12px;font-family:var(--mono);color:var(--t2);text-decoration:none;text-align:center">Essential $299/mo</a>
+          <a href="https://www.paypal.com/subscribe?plan_id=P-3AK97705DF981224CNHZRNYY" style="flex:1;padding:10px;background:rgba(212,166,86,.07);border:1px solid rgba(212,166,86,.25);border-radius:8px;font-size:12px;font-family:var(--mono);color:var(--gl);text-decoration:none;text-align:center">Prestige $499/mo ★</a>
+        </div>
+      </div>
       <a href="https://dashboard.itslexa.com" style="display:block;width:100%;padding:14px;background:linear-gradient(180deg,var(--gl),var(--g));color:#0A0A0B;border:none;border-radius:10px;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;text-align:center;box-shadow:0 0 0 1px rgba(212,166,86,.4),0 4px 16px rgba(212,166,86,.2)">Go to your dashboard →</a>
 
       <p style="font-size:12px;color:var(--t3);font-family:var(--mono);margin-top:16px">Questions? Email naveen@itslexa.com — we reply within the hour</p>
@@ -438,6 +447,51 @@ document.querySelectorAll('input[name=vertical]').forEach(r => {
     }
   })
 })
+
+async function submitAndContinue() {
+  const url = document.getElementById('bizUrl').value.trim()
+  const vert = document.querySelector('input[name=vertical]:checked')?.value || 'medspa'
+  const phone = document.getElementById('ownerPhone').value.trim()
+  const name = document.getElementById('bizName').value.trim()
+
+  if (!url || !phone || !name) {
+    if (!name) document.getElementById('bizName').focus()
+    else if (!phone) document.getElementById('ownerPhone').focus()
+    return
+  }
+
+  // Show loading state
+  const btn = document.querySelector('button[onclick="submitAndContinue()"]')
+  btn.textContent = 'Setting up Lexa...'
+  btn.disabled = true
+
+  try {
+    const resp = await fetch('https://dashboard.itslexa.com/onboard', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        website_url: url,
+        business_type: vert,
+        business_name: name,
+        owner_whatsapp: phone,
+        services: document.getElementById('services').value.trim(),
+        salon_phone: '+13203359845',
+        plan: 'prestige'
+      })
+    })
+    const data = await resp.json()
+    console.log('Onboard result:', data)
+    
+    // Save result for success screen
+    localStorage.setItem('lexa_biz', data.business_name || name)
+  } catch (err) {
+    console.log('Onboard error (continuing anyway):', err)
+  }
+
+  btn.textContent = 'Continue →'
+  btn.disabled = false
+  goStep(2)
+}
 </script>
 </body>
 </html>
