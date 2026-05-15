@@ -170,6 +170,12 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
     </div>
 
     <div class="field">
+      <label>Your email</label>
+      <input type="email" id="ownerEmail" placeholder="you@yourbusiness.com" autocomplete="email">
+      <p class="hint">You'll use this to log into your Lexa dashboard</p>
+    </div>
+
+    <div class="field">
       <label>Business type</label>
       <div class="vert-grid">
         <div class="vert-opt">
@@ -212,9 +218,9 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
     </div>
 
     <div class="field">
-      <label>Owner phone (for booking notifications)</label>
+      <label>Your phone (for booking approvals)</label>
       <input type="tel" id="ownerPhone" placeholder="+1 (555) 000-0000">
-      <p class="hint">Lexa texts you every time a booking needs your approval</p>
+      <p class="hint">Lexa sends every new booking here for your approval via SMS</p>
     </div>
 
     <button class="btn-primary" onclick="submitAndContinue()">Set up Lexa →</button>
@@ -303,6 +309,10 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
           <div class="ns-text"><strong>Business set up</strong> — services, hours, and notifications configured</div>
         </div>
         <div class="next-step">
+          <div class="ns-check" style="background:rgba(212,166,86,.1);border-color:rgba(212,166,86,.25);color:var(--gl)">✉</div>
+          <div class="ns-text"><strong>Check your email</strong> — we sent you a link to set your password and access your dashboard</div>
+        </div>
+        <div class="next-step">
           <div class="ns-check">✓</div>
           <div class="ns-text"><strong>Lexa number assigned</strong> — forward your calls to activate</div>
         </div>
@@ -339,9 +349,11 @@ function goStep(n) {
   // Validate before leaving step 1
   if (currentStep === 1 && n > 1) {
     const name = document.getElementById('bizName').value.trim()
+    const email = document.getElementById('ownerEmail').value.trim()
     const vertical = document.querySelector('input[name=vertical]:checked')
     const phone = document.getElementById('ownerPhone').value.trim()
     if (!name) { document.getElementById('bizName').focus(); return }
+    if (!email || !email.includes('@')) { document.getElementById('ownerEmail').focus(); return }
     if (!vertical) { document.getElementById('v-medspa').closest('.vert-grid').style.outline = '1px solid rgba(212,166,86,.4)'; return }
     if (!phone) { document.getElementById('ownerPhone').focus(); return }
     // Save to localStorage
@@ -465,6 +477,9 @@ async function submitAndContinue() {
   btn.textContent = 'Setting up Lexa...'
   btn.disabled = true
 
+  // Show loading while Firecrawl reads their website
+  btn.textContent = 'Reading your website...'
+
   try {
     const resp = await fetch('https://dashboard.itslexa.com/onboard', {
       method: 'POST',
@@ -474,18 +489,66 @@ async function submitAndContinue() {
         business_type: vert,
         business_name: name,
         owner_whatsapp: phone,
-        services: document.getElementById('services').value.trim(),
-        salon_phone: '+13203359845',
-        plan: 'prestige'
+        services: document.getElementById('services') ? document.getElementById('services').value.trim() : '',
+        plan: document.querySelector('input[name=plan]:checked')?.value || 'prestige'
       })
     })
     const data = await resp.json()
     console.log('Onboard result:', data)
-    
-    // Save result for success screen
+
+    // Update success screen with real data
+    if (data.business_name || name) {
+      const bname = data.business_name || name
+      const successMsg = document.getElementById('successMsg')
+      if (successMsg) successMsg.textContent = 'Lexa has learned ' + bname + '. Ready to answer calls right now.'
+    }
+    if (data.lexa_number) {
+      const numEl = document.getElementById('lexaNumber')
+      if (numEl) numEl.textContent = data.lexa_number
+    }
+    // Store session — they'll be auto-logged into dashboard
+    if (data.session_token) {
+      localStorage.setItem('lexa_token', data.session_token)
+    }
+    if (data.lexa_number) {
+      localStorage.setItem('lexa_phone', data.lexa_number)
+    }
     localStorage.setItem('lexa_biz', data.business_name || name)
+
+    // Update success screen
+    const sm = document.getElementById('successMsg')
+    if (sm) sm.textContent = 'Lexa has learned ' + bname + '. Ready to answer calls right now.'
+
+    // Update dashboard link
+    const db2 = document.getElementById('dashBtn')
+    if (db2 && data.dashboard_url) db2.href = data.dashboard_url
+
+    // Set Lexa number
+    const ln = document.getElementById('lexaNumber')
+    if (ln && data.lexa_number) {
+      ln.textContent = data.lexa_number
+      document.getElementById('lexaNumInline').textContent = data.lexa_number
+    }
+
+    // Create dashboard account → sends confirmation email to set password
+    const email = document.getElementById('ownerEmail')?.value?.trim()
+    if (email) {
+      try {
+        const authResp = await fetch('/auth/signup', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            email,
+            salon_phone: data?.salon_phone || phone,
+            business_name: data?.business_name || name
+          })
+        })
+        localStorage.setItem('lexa_email', email)
+      } catch(e) { console.log('Auth signup:', e) }
+    }
+
   } catch (err) {
-    console.log('Onboard error (continuing anyway):', err)
+    console.log('Onboard API error:', err)
   }
 
   btn.textContent = 'Continue →'
