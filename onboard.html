@@ -7,6 +7,8 @@
 <title>Set up Lexa — Get live in 5 minutes</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- Paddle.js -->
+<script src="https://cdn.paddle.com/paddle/v2/paddle.js" onload="Paddle.Initialize({token:'live_289bc50722940415ed92ebf8659'})"></script>
 <style>
 :root{
   --bg:#0A0A0B;--s1:#111110;--s2:#191917;
@@ -24,11 +26,7 @@
 html{scroll-behavior:smooth}
 body{font-family:var(--sans);-webkit-font-smoothing:antialiased;color:var(--t1);background:var(--bg);min-height:100dvh;line-height:1.5}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 60% 40% at 50% -5%,rgba(212,166,86,.1) 0%,transparent 60%)}
-
-/* Layout */
 .wrap{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:60px 24px 80px}
-
-/* Header */
 .logo{display:inline-flex;align-items:center;gap:8px;font-family:var(--serif);font-size:18px;color:var(--t1);text-decoration:none;margin-bottom:48px}
 .logo em{font-style:italic;color:var(--gl)}
 .step-bar{display:flex;align-items:center;gap:0;margin-bottom:48px}
@@ -39,47 +37,30 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .step-dot.done span{display:none}
 .step-line{flex:1;height:1px;background:var(--b1)}
 .step-line.done{background:rgba(34,197,94,.25)}
-
-/* Page header */
 .page-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:1.8px;color:var(--g);text-transform:uppercase;margin-bottom:10px}
 .page-title{font-family:var(--serif);font-size:clamp(28px,4vw,40px);font-weight:400;letter-spacing:-.8px;line-height:1.08;margin-bottom:10px;background:linear-gradient(180deg,var(--t1) 0%,var(--ch) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
 .page-title em{font-style:italic;background:linear-gradient(180deg,#E8D6B3 0%,var(--gl) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
 .page-sub{font-size:14px;color:var(--t2);margin-bottom:36px;font-weight:300;line-height:1.65}
-
-/* Steps */
 .step{display:none}.step.active{display:block}
-
-/* Form elements */
 .field{margin-bottom:20px}
 .field label{display:block;font-size:12px;font-family:var(--mono);color:var(--t3);letter-spacing:.5px;margin-bottom:8px;text-transform:uppercase}
-.field input,.field textarea,.field select{
-  width:100%;background:rgba(255,247,230,.04);border:1px solid var(--b2);
-  border-radius:10px;padding:13px 16px;font-size:14px;color:var(--t1);
-  font-family:var(--sans);outline:none;transition:border-color .2s var(--ease);
-  -webkit-appearance:none;
-}
+.field input,.field textarea,.field select{width:100%;background:rgba(255,247,230,.04);border:1px solid var(--b2);border-radius:10px;padding:13px 16px;font-size:14px;color:var(--t1);font-family:var(--sans);outline:none;transition:border-color .2s var(--ease);-webkit-appearance:none;}
 .field textarea{resize:vertical;min-height:90px;line-height:1.6}
 .field select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237A7468' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
 .field input:focus,.field textarea:focus,.field select:focus{border-color:rgba(212,166,86,.4)}
 .field input::placeholder,.field textarea::placeholder{color:var(--t3)}
 .field .hint{font-size:11px;color:var(--t3);margin-top:6px;font-family:var(--mono)}
-
-/* URL field with fetch button */
 .url-wrap{position:relative}
 .url-wrap input{padding-right:110px}
 .url-fetch{position:absolute;right:6px;top:50%;transform:translateY(-50%);padding:6px 14px;background:rgba(184,138,68,.15);border:1px solid rgba(212,166,86,.25);border-radius:6px;font-size:11px;font-family:var(--mono);color:var(--gl);cursor:pointer;transition:all .2s;white-space:nowrap}
 .url-fetch:hover{background:rgba(184,138,68,.25);border-color:rgba(212,166,86,.4)}
 .url-fetch.loading{color:var(--t3);border-color:var(--b1);pointer-events:none}
-
-/* Preview card */
 .preview{background:rgba(255,247,230,.03);border:1px solid var(--b1);border-radius:12px;padding:16px;margin-top:12px;display:none}
 .preview.show{display:block}
 .preview-label{font-size:10px;font-family:var(--mono);color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px}
 .preview-label::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--grn);box-shadow:0 0 6px var(--grn)}
 .preview-name{font-size:14px;font-weight:500;margin-bottom:4px}
 .preview-services{font-size:12px;color:var(--t2);line-height:1.6}
-
-/* Radio grid for verticals */
 .vert-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:4px}
 .vert-opt{position:relative}
 .vert-opt input[type=radio]{position:absolute;opacity:0;width:0;height:0}
@@ -89,8 +70,6 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .vert-icon{font-size:18px;flex-shrink:0}
 .vert-name{font-size:13px;font-weight:400}
 .vert-desc{font-size:10px;font-family:var(--mono);color:var(--t3);margin-top:1px}
-
-/* Hours grid */
 .hours-grid{display:grid;gap:0;border:1px solid var(--b1);border-radius:10px;overflow:hidden}
 .hours-row{display:grid;grid-template-columns:90px 1fr 1fr 80px;align-items:center;gap:0;padding:10px 14px;border-bottom:1px solid var(--b1);font-size:12px}
 .hours-row:last-child{border-bottom:none}
@@ -102,8 +81,6 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .closed-toggle input{width:14px;height:14px;accent-color:var(--gl);cursor:pointer}
 .hours-row.is-closed .hours-input{opacity:.3;pointer-events:none}
 .hours-row.is-closed .day-name{color:var(--t3)}
-
-/* Phone forward instructions */
 .phone-card{background:rgba(255,247,230,.03);border:1px solid var(--b1);border-radius:12px;padding:20px;margin-top:16px}
 .phone-number{font-family:var(--mono);font-size:22px;font-weight:500;color:var(--gl);letter-spacing:1px;margin:8px 0}
 .phone-steps{display:flex;flex-direction:column;gap:8px;margin-top:14px}
@@ -111,21 +88,15 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .phone-step-n{width:20px;height:20px;border-radius:50%;background:rgba(184,138,68,.12);border:1px solid rgba(212,166,86,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-family:var(--mono);color:var(--gl);flex-shrink:0;margin-top:1px}
 .copy-btn{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;background:rgba(184,138,68,.08);border:1px solid rgba(212,166,86,.18);border-radius:4px;font-size:10px;font-family:var(--mono);color:var(--gl);cursor:pointer;margin-left:6px;transition:all .2s}
 .copy-btn:hover{background:rgba(184,138,68,.18)}
-
-/* Buttons */
 .btn-primary{width:100%;padding:14px;background:linear-gradient(180deg,var(--gl),var(--g));color:#0A0A0B;border:none;border-radius:10px;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 0 0 1px rgba(212,166,86,.4),0 4px 16px rgba(212,166,86,.2);transition:all .2s var(--ease);letter-spacing:-.1px}
 .btn-primary:hover{transform:translateY(-1px);box-shadow:0 0 0 1px rgba(212,166,86,.5),0 8px 24px rgba(212,166,86,.25)}
 .btn-primary:disabled{opacity:.4;pointer-events:none}
 .btn-secondary{width:100%;padding:14px;background:transparent;color:var(--t2);border:1px solid var(--b2);border-radius:10px;font-family:var(--sans);font-size:14px;cursor:pointer;transition:all .2s;margin-top:8px}
 .btn-secondary:hover{border-color:var(--b3);color:var(--t1)}
-
-/* Notice */
 .notice{padding:14px 16px;border-radius:10px;font-size:13px;line-height:1.6;margin-bottom:20px;display:flex;gap:10px;align-items:flex-start}
 .notice.info{background:rgba(212,166,86,.07);border:1px solid rgba(212,166,86,.18);color:var(--t2)}
 .notice.success{background:var(--grn-bg);border:1px solid var(--grn-b);color:var(--t2)}
 .notice-icon{font-size:14px;flex-shrink:0;margin-top:1px}
-
-/* Success screen */
 .success-wrap{text-align:center;padding:40px 0}
 .success-icon{width:64px;height:64px;border-radius:50%;background:var(--grn-bg);border:1px solid var(--grn-b);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 24px}
 .success-title{font-family:var(--serif);font-size:32px;font-weight:400;letter-spacing:-.8px;margin-bottom:10px;background:linear-gradient(180deg,var(--t1),var(--ch));-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -137,17 +108,24 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .ns-check{width:20px;height:20px;border-radius:50%;background:var(--grn-bg);border:1px solid var(--grn-b);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--grn);flex-shrink:0;margin-top:1px}
 .ns-text{font-size:13px;color:var(--t2);line-height:1.5}
 .ns-text strong{color:var(--t1);font-weight:500}
-
-/* Divider */
 .divider{height:1px;background:linear-gradient(90deg,transparent,var(--b2) 30%,var(--b2) 70%,transparent);margin:28px 0}
+
+/* Paddle plan selector */
+.plan-select{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}
+.plan-card{position:relative;padding:16px;border:1px solid var(--b2);border-radius:10px;cursor:pointer;transition:all .2s;text-align:left}
+.plan-card:hover{border-color:var(--b3)}
+.plan-card.selected{border-color:rgba(212,166,86,.5);background:rgba(212,166,86,.07)}
+.plan-card.featured{border-color:rgba(212,166,86,.3)}
+.plan-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:linear-gradient(90deg,var(--g),var(--gl));color:#0A0A0B;font-size:9px;font-family:var(--mono);font-weight:600;padding:2px 10px;border-radius:20px;white-space:nowrap}
+.plan-name{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gl);margin-bottom:6px}
+.plan-price{font-family:var(--mono);font-size:26px;font-weight:600;color:var(--t1);letter-spacing:-1px;line-height:1}
+.plan-period{font-size:11px;color:var(--t3);margin-top:3px;font-family:var(--mono)}
 </style>
 </head>
 <body>
-
 <div class="wrap">
   <a href="/" class="logo">lexa<em>.</em></a>
 
-  <!-- Step progress bar -->
   <div class="step-bar" id="stepBar">
     <div class="step-dot active" id="dot1"><span>1</span></div>
     <div class="step-line" id="line1"></div>
@@ -158,7 +136,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
     <div class="step-dot" id="dot4"><span>4</span></div>
   </div>
 
-  <!-- ── STEP 1: Business basics + website URL ── -->
+  <!-- STEP 1 -->
   <div class="step active" id="step1">
     <div class="page-eyebrow">Step 1 of 4</div>
     <h1 class="page-title">Your business<br><em>in one minute</em></h1>
@@ -168,35 +146,20 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
       <label>Business name</label>
       <input type="text" id="bizName" placeholder="e.g. Glow Med Spa Austin" autocomplete="organization">
     </div>
-
     <div class="field">
       <label>Your email</label>
       <input type="email" id="ownerEmail" placeholder="you@yourbusiness.com" autocomplete="email">
       <p class="hint">You'll use this to log into your Lexa dashboard</p>
     </div>
-
     <div class="field">
       <label>Business type</label>
       <div class="vert-grid">
-        <div class="vert-opt">
-          <input type="radio" name="vertical" id="v-medspa" value="medspa">
-          <label for="v-medspa"><span class="vert-icon">💉</span><div><div class="vert-name">Med Spa</div><div class="vert-desc">Botox, fillers, lasers</div></div></label>
-        </div>
-        <div class="vert-opt">
-          <input type="radio" name="vertical" id="v-dental" value="dental">
-          <label for="v-dental"><span class="vert-icon">🦷</span><div><div class="vert-name">Dental</div><div class="vert-desc">Cleanings, implants, Invisalign</div></div></label>
-        </div>
-        <div class="vert-opt">
-          <input type="radio" name="vertical" id="v-vet" value="veterinary">
-          <label for="v-vet"><span class="vert-icon">🐾</span><div><div class="vert-name">Veterinary</div><div class="vert-desc">Wellness, vaccines, surgery</div></div></label>
-        </div>
-        <div class="vert-opt">
-          <input type="radio" name="vertical" id="v-spa" value="spa">
-          <label for="v-spa"><span class="vert-icon">💆</span><div><div class="vert-name">Spa & Wellness</div><div class="vert-desc">Massage, facials, body treatments</div></div></label>
-        </div>
+        <div class="vert-opt"><input type="radio" name="vertical" id="v-medspa" value="medspa"><label for="v-medspa"><span class="vert-icon">💉</span><div><div class="vert-name">Med Spa</div><div class="vert-desc">Botox, fillers, lasers</div></div></label></div>
+        <div class="vert-opt"><input type="radio" name="vertical" id="v-dental" value="dental"><label for="v-dental"><span class="vert-icon">🦷</span><div><div class="vert-name">Dental</div><div class="vert-desc">Cleanings, implants, Invisalign</div></div></label></div>
+        <div class="vert-opt"><input type="radio" name="vertical" id="v-vet" value="veterinary"><label for="v-vet"><span class="vert-icon">🐾</span><div><div class="vert-name">Veterinary</div><div class="vert-desc">Wellness, vaccines, surgery</div></div></label></div>
+        <div class="vert-opt"><input type="radio" name="vertical" id="v-spa" value="spa"><label for="v-spa"><span class="vert-icon">💆</span><div><div class="vert-name">Spa & Wellness</div><div class="vert-desc">Massage, facials, body treatments</div></div></label></div>
       </div>
     </div>
-
     <div class="field">
       <label>Your website URL</label>
       <div class="url-wrap">
@@ -210,13 +173,11 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
         <div class="preview-services" id="previewServices"></div>
       </div>
     </div>
-
     <div class="field">
       <label>Services (edit or add)</label>
-      <textarea id="services" placeholder="e.g. Botox, Dysport, Juvederm fillers, HydraFacial, microneedling, chemical peels, CoolSculpting, free consultations"></textarea>
+      <textarea id="services" placeholder="e.g. Botox, Dysport, Juvederm fillers, HydraFacial, microneedling, chemical peels"></textarea>
       <p class="hint">Lexa will only book services listed here — be specific</p>
     </div>
-
     <div class="field">
       <label>Your phone (for booking approvals)</label>
       <input type="tel" id="ownerPhone" placeholder="+1 (555) 000-0000">
@@ -226,16 +187,13 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
     <button class="btn-primary" onclick="submitAndContinue()">Set up Lexa →</button>
   </div>
 
-  <!-- ── STEP 2: Hours ── -->
+  <!-- STEP 2 -->
   <div class="step" id="step2">
     <div class="page-eyebrow">Step 2 of 4</div>
     <h1 class="page-title">Your hours<br><em>&amp; availability</em></h1>
     <p class="page-sub">Lexa checks these before confirming any booking. Mark any day closed and she'll suggest the next open slot.</p>
-
     <div class="hours-grid">
-      <div class="hours-row">
-        <div>Day</div><div>Opens</div><div>Closes</div><div style="text-align:right">Closed</div>
-      </div>
+      <div class="hours-row"><div>Day</div><div>Opens</div><div>Closes</div><div style="text-align:right">Closed</div></div>
       <div class="hours-row" id="row-mon"><span class="day-name">Monday</span><input class="hours-input" type="time" value="09:00"><input class="hours-input" type="time" value="18:00"><label class="closed-toggle"><input type="checkbox" onchange="toggleClosed(this,'row-mon')"> closed</label></div>
       <div class="hours-row" id="row-tue"><span class="day-name">Tuesday</span><input class="hours-input" type="time" value="09:00"><input class="hours-input" type="time" value="18:00"><label class="closed-toggle"><input type="checkbox" onchange="toggleClosed(this,'row-tue')"> closed</label></div>
       <div class="hours-row" id="row-wed"><span class="day-name">Wednesday</span><input class="hours-input" type="time" value="09:00"><input class="hours-input" type="time" value="18:00"><label class="closed-toggle"><input type="checkbox" onchange="toggleClosed(this,'row-wed')"> closed</label></div>
@@ -244,46 +202,31 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
       <div class="hours-row is-closed" id="row-sat"><span class="day-name">Saturday</span><input class="hours-input" type="time" value="10:00"><input class="hours-input" type="time" value="16:00"><label class="closed-toggle"><input type="checkbox" checked onchange="toggleClosed(this,'row-sat')"> closed</label></div>
       <div class="hours-row is-closed" id="row-sun"><span class="day-name">Sunday</span><input class="hours-input" type="time" value="10:00"><input class="hours-input" type="time" value="16:00"><label class="closed-toggle"><input type="checkbox" checked onchange="toggleClosed(this,'row-sun')"> closed</label></div>
     </div>
-
     <div class="divider"></div>
     <button class="btn-primary" onclick="goStep(3)">Continue →</button>
     <button class="btn-secondary" onclick="goStep(1)">← Back</button>
   </div>
 
-  <!-- ── STEP 3: Your Lexa number ── -->
+  <!-- STEP 3 -->
   <div class="step" id="step3">
     <div class="page-eyebrow">Step 3 of 4</div>
     <h1 class="page-title">Your Lexa<br><em>phone number</em></h1>
-    <p class="page-sub">This is the number you'll forward your business calls to. Lexa answers in your business name.</p>
-
+    <p class="page-sub">Forward your existing business number to this — Lexa answers in your business name.</p>
     <div class="notice info">
       <span class="notice-icon">⚡</span>
-      <span>We're assigning your dedicated Lexa number. It will appear below in a moment — or check your email if it's not here yet.</span>
+      <span>Your dedicated Lexa number has been assigned. Forward your business calls to this number to go live.</span>
     </div>
-
     <div class="phone-card">
       <div style="font-size:11px;font-family:var(--mono);color:var(--t3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px">Your Lexa number</div>
-      <div class="phone-number" id="lexaNumber">+1 (320) 335-9845</div>
+      <div class="phone-number" id="lexaNumber">Loading...</div>
       <div style="font-size:12px;color:var(--t2);margin-bottom:16px">Forward your business calls to this number</div>
-
       <div class="phone-steps">
-        <div class="phone-step">
-          <div class="phone-step-n">1</div>
-          <div>Go to your phone's <strong>Settings → Phone → Call Forwarding</strong> (iPhone) or your carrier's app</div>
-        </div>
-        <div class="phone-step">
-          <div class="phone-step-n">2</div>
-          <div>Set "Forward when unanswered" or "Always forward" to: <strong id="lexaNumberInline">+13203359845</strong> <button class="copy-btn" onclick="copyNumber()">copy</button></div>
-        </div>
-        <div class="phone-step">
-          <div class="phone-step-n">3</div>
-          <div>Call your own number from another phone to test — Lexa will answer</div>
-        </div>
+        <div class="phone-step"><div class="phone-step-n">1</div><div>Go to your phone's <strong>Settings → Phone → Call Forwarding</strong> (iPhone) or your carrier's app</div></div>
+        <div class="phone-step"><div class="phone-step-n">2</div><div>Set "Forward when unanswered" to: <strong id="lexaNumberInline">...</strong> <button class="copy-btn" onclick="copyNumber()">copy</button></div></div>
+        <div class="phone-step"><div class="phone-step-n">3</div><div>Call your own number from another phone to test — Lexa will answer</div></div>
       </div>
     </div>
-
     <div class="divider"></div>
-
     <div class="field">
       <label>Test call complete?</label>
       <div style="display:flex;gap:10px;margin-top:4px">
@@ -291,84 +234,124 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
         <button onclick="setTestDone(false)" id="testNo" style="flex:1;padding:10px;background:rgba(255,247,230,.03);border:1px solid var(--b1);border-radius:8px;color:var(--t3);font-family:var(--sans);font-size:13px;cursor:pointer">Skip for now</button>
       </div>
     </div>
-
-    <button class="btn-primary" id="step3Btn" onclick="goStep(4)" style="margin-top:4px">Continue →</button>
+    <button class="btn-primary" onclick="goStep(4)" style="margin-top:4px">Continue →</button>
     <button class="btn-secondary" onclick="goStep(2)">← Back</button>
   </div>
 
-  <!-- ── STEP 4: Done ── -->
+  <!-- STEP 4 -->
   <div class="step" id="step4">
     <div class="success-wrap">
       <div class="success-icon">🎉</div>
       <h2 class="success-title">Lexa is <em>live</em></h2>
-      <p class="success-sub">Your AI receptionist is answering calls, booking appointments, and notifying you — right now.</p>
+      <p class="success-sub" id="successMsg">Your AI receptionist is answering calls, booking appointments, and notifying you — right now.</p>
 
       <div class="next-steps">
-        <div class="next-step">
-          <div class="ns-check">✓</div>
-          <div class="ns-text"><strong>Business set up</strong> — services, hours, and notifications configured</div>
-        </div>
-        <div class="next-step">
-          <div class="ns-check" style="background:rgba(212,166,86,.1);border-color:rgba(212,166,86,.25);color:var(--gl)">✉</div>
-          <div class="ns-text"><strong>Check your email</strong> — we sent you a link to set your password and access your dashboard</div>
-        </div>
-        <div class="next-step">
-          <div class="ns-check">✓</div>
-          <div class="ns-text"><strong>Lexa number assigned</strong> — forward your calls to activate</div>
-        </div>
-        <div class="next-step">
-          <div class="ns-check" style="background:rgba(212,166,86,.1);border-color:rgba(212,166,86,.25);color:var(--gl)">→</div>
-          <div class="ns-text"><strong>Add an active offer</strong> — Lexa will mention it on every relevant call</div>
-        </div>
-        <div class="next-step">
-          <div class="ns-check" style="background:rgba(212,166,86,.1);border-color:rgba(212,166,86,.25);color:var(--gl)">→</div>
-          <div class="ns-text"><strong>Mark any closed days</strong> — Lexa won't book those dates</div>
-        </div>
+        <div class="next-step"><div class="ns-check">✓</div><div class="ns-text"><strong>Business set up</strong> — services, hours, and notifications configured</div></div>
+        <div class="next-step"><div class="ns-check" style="background:rgba(212,166,86,.1);border-color:rgba(212,166,86,.25);color:var(--gl)">✉</div><div class="ns-text"><strong>Check your email</strong> — we sent you a link to access your dashboard</div></div>
+        <div class="next-step"><div class="ns-check">✓</div><div class="ns-text"><strong>Lexa number assigned</strong> — forward your calls to activate</div></div>
+        <div class="next-step"><div class="ns-check" style="background:rgba(212,166,86,.1);border-color:rgba(212,166,86,.25);color:var(--gl)">→</div><div class="ns-text"><strong>Add an active offer</strong> — Lexa will mention it on every relevant call</div></div>
       </div>
 
-      
-      <!-- PayPal subscription after 14-day trial -->
-      <div style="margin-top:16px;padding:16px;background:rgba(255,247,230,.03);border:1px solid var(--b1);border-radius:10px;text-align:left">
-        <div style="font-size:11px;font-family:var(--mono);color:var(--t3);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px">After your 14-day free trial</div>
-        <div style="display:flex;gap:8px">
-          <a href="https://www.paypal.com/subscribe?plan_id=P-86L265787M100722SNHZRH4Y" style="flex:1;padding:10px;background:rgba(255,247,230,.03);border:1px solid var(--b2);border-radius:8px;font-size:12px;font-family:var(--mono);color:var(--t2);text-decoration:none;text-align:center">Essential $299/mo</a>
-          <a href="https://www.paypal.com/subscribe?plan_id=P-3AK97705DF981224CNHZRNYY" style="flex:1;padding:10px;background:rgba(212,166,86,.07);border:1px solid rgba(212,166,86,.25);border-radius:8px;font-size:12px;font-family:var(--mono);color:var(--gl);text-decoration:none;text-align:center">Prestige $499/mo ★</a>
+      <!-- Paddle plan + subscription -->
+      <div style="background:rgba(255,247,230,.03);border:1px solid var(--b1);border-radius:12px;padding:20px;margin-bottom:16px;text-align:left">
+        <div style="font-size:11px;font-family:var(--mono);color:var(--t3);margin-bottom:14px;text-transform:uppercase;letter-spacing:.5px">Choose your plan — 14 days free</div>
+        <div class="plan-select">
+          <div class="plan-card" id="planEssential" onclick="selectPlan('essential')">
+            <div class="plan-name">Essential</div>
+            <div class="plan-price">$299</div>
+            <div class="plan-period">/month · 500 calls</div>
+          </div>
+          <div class="plan-card featured selected" id="planPrestige" onclick="selectPlan('prestige')">
+            <div class="plan-badge">MOST POPULAR</div>
+            <div class="plan-name">Prestige</div>
+            <div class="plan-price">$499</div>
+            <div class="plan-period">/month · 1,000 calls</div>
+          </div>
         </div>
+        <button class="btn-primary" id="paddleBtn" onclick="startPaddleCheckout()">
+          Start 14-day free trial →
+        </button>
+        <p style="font-size:11px;font-family:var(--mono);color:var(--t3);text-align:center;margin-top:10px">No charge for 14 days · Cancel any time</p>
       </div>
-      <a href="https://dashboard.itslexa.com" style="display:block;width:100%;padding:14px;background:linear-gradient(180deg,var(--gl),var(--g));color:#0A0A0B;border:none;border-radius:10px;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;text-align:center;box-shadow:0 0 0 1px rgba(212,166,86,.4),0 4px 16px rgba(212,166,86,.2)">Go to your dashboard →</a>
 
-      <p style="font-size:12px;color:var(--t3);font-family:var(--mono);margin-top:16px">Questions? Email naveen@itslexa.com — we reply within the hour</p>
+      <a href="https://dashboard.itslexa.com" id="dashBtn" style="display:block;width:100%;padding:14px;background:transparent;color:var(--t2);border:1px solid var(--b2);border-radius:10px;font-family:var(--sans);font-size:14px;cursor:pointer;text-decoration:none;text-align:center;transition:all .2s">Go to dashboard first →</a>
+
+      <p style="font-size:12px;color:var(--t3);font-family:var(--mono);margin-top:16px">Questions? eppili.naveen@itslexa.com — we reply within the hour</p>
     </div>
   </div>
 </div>
 
 <script>
+// ── State ─────────────────────────────────────────────────
 let currentStep = 1
+let selectedPlan = 'prestige'  // default
+let onboardData  = {}          // filled after /onboard call
 
-function goStep(n) {
-  // Validate before leaving step 1
-  if (currentStep === 1 && n > 1) {
-    const name = document.getElementById('bizName').value.trim()
-    const email = document.getElementById('ownerEmail').value.trim()
-    const vertical = document.querySelector('input[name=vertical]:checked')
-    const phone = document.getElementById('ownerPhone').value.trim()
-    if (!name) { document.getElementById('bizName').focus(); return }
-    if (!email || !email.includes('@')) { document.getElementById('ownerEmail').focus(); return }
-    if (!vertical) { document.getElementById('v-medspa').closest('.vert-grid').style.outline = '1px solid rgba(212,166,86,.4)'; return }
-    if (!phone) { document.getElementById('ownerPhone').focus(); return }
-    // Save to localStorage
-    localStorage.setItem('lexa_onboard', JSON.stringify({
-      name, vertical: vertical.value,
-      url: document.getElementById('bizUrl').value.trim(),
-      services: document.getElementById('services').value.trim(),
-      phone
-    }))
+const PRICE_IDS = {
+  essential: 'pri_01ks4q6jysv0atr4sj9kb302qn',
+  prestige:  'pri_01ks4qctqqg7v8hvh9qyejkqke',
+}
+
+// Read plan from URL param: ?plan=essential or ?plan=prestige
+const urlPlan = new URLSearchParams(location.search).get('plan')
+if (urlPlan && PRICE_IDS[urlPlan]) selectedPlan = urlPlan
+
+// ── Plan selector ─────────────────────────────────────────
+function selectPlan(plan) {
+  selectedPlan = plan
+  document.getElementById('planEssential').classList.toggle('selected', plan === 'essential')
+  document.getElementById('planPrestige').classList.toggle('selected', plan === 'prestige')
+}
+// Apply URL param on load
+selectPlan(selectedPlan)
+
+// ── Paddle checkout ───────────────────────────────────────
+async function startPaddleCheckout() {
+  const btn = document.getElementById('paddleBtn')
+  btn.textContent = 'Opening checkout...'
+  btn.disabled = true
+
+  const email      = localStorage.getItem('lexa_email') || document.getElementById('ownerEmail')?.value?.trim() || ''
+  const salonPhone = localStorage.getItem('lexa_phone') || ''
+  const bizName    = localStorage.getItem('lexa_biz') || ''
+
+  try {
+    Paddle.Checkout.open({
+      items: [{ priceId: PRICE_IDS[selectedPlan], quantity: 1 }],
+      customer: { email },
+      customData: {
+        salon_phone: salonPhone,
+        owner_email: email,
+        plan: selectedPlan,
+      },
+      settings: {
+        displayMode: 'overlay',
+        theme: 'dark',
+        successUrl: `https://itslexa.com/onboard.html?success=1&phone=${encodeURIComponent(salonPhone)}`,
+      },
+    })
+  } catch(e) {
+    console.error('Paddle error:', e)
   }
 
+  btn.textContent = 'Start 14-day free trial →'
+  btn.disabled = false
+}
+
+// ── Step navigation ───────────────────────────────────────
+function goStep(n) {
+  if (currentStep === 1 && n > 1) {
+    const name  = document.getElementById('bizName').value.trim()
+    const email = document.getElementById('ownerEmail').value.trim()
+    const vert  = document.querySelector('input[name=vertical]:checked')
+    const phone = document.getElementById('ownerPhone').value.trim()
+    if (!name)  { document.getElementById('bizName').focus(); return }
+    if (!email || !email.includes('@')) { document.getElementById('ownerEmail').focus(); return }
+    if (!vert)  { return }
+    if (!phone) { document.getElementById('ownerPhone').focus(); return }
+  }
   document.getElementById('step' + currentStep).classList.remove('active')
   document.getElementById('step' + n).classList.add('active')
-
-  // Update dots
   for (let i = 1; i <= 4; i++) {
     const dot = document.getElementById('dot' + i)
     dot.classList.remove('active','done')
@@ -376,10 +359,8 @@ function goStep(n) {
     else if (i === n) dot.classList.add('active')
   }
   for (let i = 1; i <= 3; i++) {
-    const line = document.getElementById('line' + i)
-    line.classList.toggle('done', i < n)
+    document.getElementById('line' + i).classList.toggle('done', i < n)
   }
-
   currentStep = n
   window.scrollTo({top: 0, behavior: 'smooth'})
 }
@@ -404,81 +385,65 @@ function copyNumber() {
 }
 
 async function fetchWebsite() {
-  const url = document.getElementById('bizUrl').value.trim()
+  const url  = document.getElementById('bizUrl').value.trim()
   if (!url) return
-  const btn = document.getElementById('fetchBtn')
+  const btn  = document.getElementById('fetchBtn')
   btn.textContent = 'Reading...'
   btn.classList.add('loading')
-  
-  // In production this would call your API to scrape the URL
-  // For now simulate a delay then show preview
   await new Promise(r => setTimeout(r, 1200))
-  
-  const name = document.getElementById('bizName').value.trim()
-  const vertical = document.querySelector('input[name=vertical]:checked')
-  
-  // Show preview with current form data
+  const name   = document.getElementById('bizName').value.trim()
+  const vert   = document.querySelector('input[name=vertical]:checked')
   document.getElementById('previewName').textContent = name || url.replace(/https?:\/\/(www\.)?/,'').split('/')[0]
-  document.getElementById('previewServices').textContent = 
-    vertical?.value === 'medspa' ? 'Services detected: Botox, Dysport, dermal fillers, HydraFacial, microneedling, laser, CoolSculpting, chemical peels' :
-    vertical?.value === 'dental' ? 'Services detected: Dental cleaning, exam, whitening, veneers, implants, Invisalign, fillings, crowns' :
-    vertical?.value === 'veterinary' ? 'Services detected: Wellness exam, vaccinations, spay/neuter, dental cleaning, bloodwork, microchipping' :
-    'Services detected: Swedish massage, deep tissue, hot stone, couples massage, HydraFacial, facials, body treatments'
-  
+  document.getElementById('previewServices').textContent =
+    vert?.value === 'medspa'      ? 'Services detected: Botox, Dysport, dermal fillers, HydraFacial, microneedling, laser' :
+    vert?.value === 'dental'      ? 'Services detected: Cleaning, exam, whitening, veneers, implants, Invisalign' :
+    vert?.value === 'veterinary'  ? 'Services detected: Wellness exam, vaccines, spay/neuter, dental, bloodwork' :
+    'Services detected: Swedish massage, deep tissue, hot stone, HydraFacial, facials'
   document.getElementById('preview').classList.add('show')
-  
-  // Pre-fill services
-  if (!document.getElementById('services').value && vertical) {
-    const defaults = {
-      medspa: 'Botox, Dysport, Juvederm fillers, Restylane fillers, HydraFacial, microneedling, IPL laser, Morpheus8, CoolSculpting, chemical peels, free consultations',
-      dental: 'Dental cleaning, exam, x-rays, teeth whitening, veneers, dental implants, Invisalign, fillings, crowns, emergency dental',
-      veterinary: 'Wellness exam, DHPP vaccine, FVRCP vaccine, Rabies vaccine, spay/neuter, dental cleaning, bloodwork, x-rays, microchipping, sick visits',
-      spa: 'Swedish massage, deep tissue massage, hot stone massage, couples massage, prenatal massage, HydraFacial, classic facial, anti-aging facial, body scrub'
+  if (!document.getElementById('services').value && vert) {
+    const d = {
+      medspa:'Botox, Dysport, Juvederm fillers, Restylane fillers, HydraFacial, microneedling, IPL laser, Morpheus8, CoolSculpting, chemical peels',
+      dental:'Dental cleaning, exam, x-rays, teeth whitening, veneers, dental implants, Invisalign, fillings, crowns, emergency dental',
+      veterinary:'Wellness exam, DHPP vaccine, FVRCP vaccine, Rabies vaccine, spay/neuter, dental cleaning, bloodwork, x-rays, microchipping',
+      spa:'Swedish massage, deep tissue massage, hot stone massage, couples massage, HydraFacial, classic facial, anti-aging facial, body scrub'
     }
-    document.getElementById('services').value = defaults[vertical.value] || ''
+    document.getElementById('services').value = d[vert.value] || ''
   }
-  
   btn.textContent = '✓ Website read'
   btn.style.color = 'var(--grn)'
   btn.style.borderColor = 'var(--grn-b)'
   btn.style.background = 'var(--grn-bg)'
 }
 
-// Auto-fill services when vertical selected
 document.querySelectorAll('input[name=vertical]').forEach(r => {
   r.addEventListener('change', () => {
     if (!document.getElementById('bizUrl').value) {
-      const defaults = {
-        medspa: 'Botox, Dysport, Juvederm fillers, Restylane fillers, HydraFacial, microneedling, IPL laser, Morpheus8, CoolSculpting, chemical peels, free consultations',
-        dental: 'Dental cleaning, exam, x-rays, teeth whitening, veneers, dental implants, Invisalign, fillings, crowns, emergency dental',
-        veterinary: 'Wellness exam, DHPP vaccine, FVRCP vaccine, Rabies vaccine, spay/neuter, dental cleaning, bloodwork, x-rays, microchipping, sick visits',
-        spa: 'Swedish massage, deep tissue massage, hot stone massage, couples massage, prenatal massage, HydraFacial, classic facial, anti-aging facial, body scrub'
+      const d = {
+        medspa:'Botox, Dysport, Juvederm fillers, Restylane fillers, HydraFacial, microneedling, IPL laser, Morpheus8, CoolSculpting, chemical peels',
+        dental:'Dental cleaning, exam, x-rays, teeth whitening, veneers, dental implants, Invisalign, fillings, crowns',
+        veterinary:'Wellness exam, DHPP vaccine, FVRCP vaccine, Rabies vaccine, spay/neuter, dental cleaning, bloodwork',
+        spa:'Swedish massage, deep tissue massage, hot stone, couples massage, HydraFacial, classic facial'
       }
       if (!document.getElementById('services').value)
-        document.getElementById('services').value = defaults[r.value] || ''
+        document.getElementById('services').value = d[r.value] || ''
     }
   })
 })
 
 async function submitAndContinue() {
-  const url = document.getElementById('bizUrl').value.trim()
-  const vert = document.querySelector('input[name=vertical]:checked')?.value || 'medspa'
+  const name  = document.getElementById('bizName').value.trim()
+  const email = document.getElementById('ownerEmail').value.trim()
+  const vert  = document.querySelector('input[name=vertical]:checked')?.value || 'medspa'
   const phone = document.getElementById('ownerPhone').value.trim()
-  const name = document.getElementById('bizName').value.trim()
+  const url   = document.getElementById('bizUrl').value.trim()
 
-  if (!url || !phone || !name) {
-    if (!name) document.getElementById('bizName').focus()
-    else if (!phone) document.getElementById('ownerPhone').focus()
-    return
-  }
+  if (!name)  { document.getElementById('bizName').focus(); return }
+  if (!email || !email.includes('@')) { document.getElementById('ownerEmail').focus(); return }
+  if (!phone) { document.getElementById('ownerPhone').focus(); return }
 
-  // Show loading state
   const btn = document.querySelector('button[onclick="submitAndContinue()"]')
-  btn.textContent = 'Setting up Lexa...'
-  btn.disabled = true
-
-  // Show loading while Firecrawl reads their website
   btn.textContent = 'Reading your website...'
+  btn.disabled = true
 
   try {
     const resp = await fetch('https://dashboard.itslexa.com/onboard', {
@@ -489,69 +454,40 @@ async function submitAndContinue() {
         business_type: vert,
         business_name: name,
         owner_whatsapp: phone,
-        services: document.getElementById('services') ? document.getElementById('services').value.trim() : '',
-        plan: document.querySelector('input[name=plan]:checked')?.value || 'prestige'
+        owner_email: email,
+        services: document.getElementById('services').value.trim(),
+        plan: selectedPlan,
       })
     })
     const data = await resp.json()
-    console.log('Onboard result:', data)
+    onboardData = data
 
-    // Update success screen with real data
-    if (data.business_name || name) {
-      const bname = data.business_name || name
-      const successMsg = document.getElementById('successMsg')
-      if (successMsg) successMsg.textContent = 'Lexa has learned ' + bname + '. Ready to answer calls right now.'
-    }
-    if (data.lexa_number) {
-      const numEl = document.getElementById('lexaNumber')
-      if (numEl) numEl.textContent = data.lexa_number
-    }
-    // Store session — they'll be auto-logged into dashboard
-    if (data.session_token) {
-      localStorage.setItem('lexa_token', data.session_token)
-    }
+    // Store for Paddle checkout
+    localStorage.setItem('lexa_email', email)
+    localStorage.setItem('lexa_biz', data.business_name || name)
     if (data.lexa_number) {
       localStorage.setItem('lexa_phone', data.lexa_number)
+      // Update step 3 number display
+      document.getElementById('lexaNumber').textContent = data.lexa_number
+      document.getElementById('lexaNumberInline').textContent = data.lexa_number
     }
-    localStorage.setItem('lexa_biz', data.business_name || name)
+    if (data.session_token) localStorage.setItem('lexa_token', data.session_token)
+    if (data.dashboard_url) document.getElementById('dashBtn').href = data.dashboard_url
 
-    // Update success screen
-    const sm = document.getElementById('successMsg')
-    if (sm) sm.textContent = 'Lexa has learned ' + bname + '. Ready to answer calls right now.'
+    // Auth signup
+    try {
+      await fetch('https://dashboard.itslexa.com/auth/signup', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ email, salon_phone: data.lexa_number || phone, business_name: data.business_name || name })
+      })
+    } catch(e) { console.log('Auth:', e) }
 
-    // Update dashboard link
-    const db2 = document.getElementById('dashBtn')
-    if (db2 && data.dashboard_url) db2.href = data.dashboard_url
-
-    // Set Lexa number
-    const ln = document.getElementById('lexaNumber')
-    if (ln && data.lexa_number) {
-      ln.textContent = data.lexa_number
-      document.getElementById('lexaNumInline').textContent = data.lexa_number
-    }
-
-    // Create dashboard account → sends confirmation email to set password
-    const email = document.getElementById('ownerEmail')?.value?.trim()
-    if (email) {
-      try {
-        const authResp = await fetch('/auth/signup', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({
-            email,
-            salon_phone: data?.salon_phone || phone,
-            business_name: data?.business_name || name
-          })
-        })
-        localStorage.setItem('lexa_email', email)
-      } catch(e) { console.log('Auth signup:', e) }
-    }
-
-  } catch (err) {
-    console.log('Onboard API error:', err)
+  } catch(err) {
+    console.log('Onboard error:', err)
   }
 
-  btn.textContent = 'Continue →'
+  btn.textContent = 'Set up Lexa →'
   btn.disabled = false
   goStep(2)
 }
