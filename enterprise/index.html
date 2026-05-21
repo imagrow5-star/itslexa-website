@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en" style="color-scheme:dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0A0A0B">
+<title>Lexa Enterprise — Multi-Location Setup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0A0B;--s1:#111110;--s2:#191917;
+  --b1:rgba(232,200,140,.06);--b2:rgba(232,200,140,.12);--b3:rgba(232,200,140,.25);
+  --t1:#F4EFE6;--t2:#B8B3A8;--t3:#7A7468;
+  --g:#B88A44;--gl:#D4A656;--ch:#E8D6B3;
+  --grn:#22C55E;--grn-bg:rgba(34,197,94,.08);--grn-b:rgba(34,197,94,.2);
+  --serif:'Instrument Serif',Georgia,serif;
+  --sans:'Geist',-apple-system,sans-serif;
+  --mono:'Geist Mono',monospace;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);-webkit-font-smoothing:antialiased;color:var(--t1);background:var(--bg);min-height:100dvh;line-height:1.5}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 60% 40% at 50% -5%,rgba(212,166,86,.1) 0%,transparent 60%)}
+.wrap{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:60px 24px 80px}
+.logo{display:inline-flex;align-items:center;gap:8px;font-family:var(--serif);font-size:18px;color:var(--t1);text-decoration:none;margin-bottom:48px}
+.logo em{font-style:italic;color:var(--gl)}
+.enterprise-badge{display:inline-flex;align-items:center;gap:7px;padding:4px 12px;background:rgba(212,166,86,.1);border:1px solid rgba(212,166,86,.3);border-radius:20px;font-size:11px;font-family:var(--mono);color:var(--gl);letter-spacing:.5px;margin-bottom:20px}
+.page-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:1.8px;color:var(--g);text-transform:uppercase;margin-bottom:10px}
+.page-title{font-family:var(--serif);font-size:clamp(28px,4vw,44px);font-weight:400;letter-spacing:-.8px;line-height:1.08;margin-bottom:10px;background:linear-gradient(180deg,var(--t1) 0%,var(--ch) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.page-title em{font-style:italic;background:linear-gradient(180deg,#E8D6B3 0%,var(--gl) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.page-sub{font-size:14px;color:var(--t2);margin-bottom:36px;font-weight:300;line-height:1.65}
+
+/* Progress */
+.step-bar{display:flex;align-items:center;gap:0;margin-bottom:48px}
+.step-dot{width:28px;height:28px;border-radius:50%;border:1px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:10px;font-family:var(--mono);color:var(--t3);flex-shrink:0;transition:all .3s var(--ease)}
+.step-dot.active{background:rgba(212,166,86,.15);border-color:rgba(212,166,86,.4);color:var(--gl)}
+.step-dot.done{background:var(--grn-bg);border-color:var(--grn-b);color:var(--grn)}
+.step-dot.done::after{content:'✓';font-size:11px}.step-dot.done span{display:none}
+.step-line{flex:1;height:1px;background:var(--b1)}
+.step-line.done{background:rgba(34,197,94,.25)}
+
+/* Steps */
+.step{display:none}.step.active{display:block}
+
+/* Form */
+.field{margin-bottom:20px}
+.field label{display:block;font-size:12px;font-family:var(--mono);color:var(--t3);letter-spacing:.5px;margin-bottom:8px;text-transform:uppercase}
+.field input,.field textarea,.field select{width:100%;background:rgba(255,247,230,.04);border:1px solid var(--b2);border-radius:10px;padding:13px 16px;font-size:14px;color:var(--t1);font-family:var(--sans);outline:none;transition:border-color .2s var(--ease);-webkit-appearance:none}
+.field textarea{resize:vertical;min-height:80px;line-height:1.6}
+.field select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237A7468' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:rgba(212,166,86,.4)}
+.field input::placeholder,.field textarea::placeholder{color:var(--t3)}
+.field .hint{font-size:11px;color:var(--t3);margin-top:6px;font-family:var(--mono)}
+
+/* Location card */
+.loc-card{background:rgba(255,247,230,.03);border:1px solid var(--b1);border-radius:12px;padding:16px;margin-bottom:12px;position:relative}
+.loc-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.loc-card-num{font-size:11px;font-family:var(--mono);color:var(--gl);background:rgba(212,166,86,.1);border:1px solid rgba(212,166,86,.2);padding:2px 8px;border-radius:20px}
+.loc-remove{background:none;border:none;color:var(--t3);cursor:pointer;font-size:16px;padding:2px 6px;border-radius:4px}
+.loc-remove:hover{color:#EF4444;background:rgba(239,68,68,.08)}
+.loc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.loc-grid .field{margin-bottom:0}
+
+/* Vert grid */
+.vert-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:4px}
+.vert-opt{position:relative}
+.vert-opt input[type=radio]{position:absolute;opacity:0;width:0;height:0}
+.vert-opt label{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--b2);border-radius:10px;cursor:pointer;transition:all .2s;font-size:13px;color:var(--t2)}
+.vert-opt label:hover{border-color:var(--b3);color:var(--t1)}
+.vert-opt input:checked + label{border-color:rgba(212,166,86,.4);background:rgba(212,166,86,.07);color:var(--t1)}
+.vert-icon{font-size:16px;flex-shrink:0}
+.vert-name{font-size:13px}
+.vert-desc{font-size:10px;font-family:var(--mono);color:var(--t3)}
+
+/* Buttons */
+.btn-primary{width:100%;padding:14px;background:linear-gradient(180deg,var(--gl),var(--g));color:#0A0A0B;border:none;border-radius:10px;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 0 0 1px rgba(212,166,86,.4),0 4px 16px rgba(212,166,86,.2);transition:all .2s var(--ease)}
+.btn-primary:hover{transform:translateY(-1px)}
+.btn-primary:disabled{opacity:.4;pointer-events:none}
+.btn-secondary{width:100%;padding:14px;background:transparent;color:var(--t2);border:1px solid var(--b2);border-radius:10px;font-family:var(--sans);font-size:14px;cursor:pointer;transition:all .2s;margin-top:8px}
+.btn-secondary:hover{border-color:var(--b3);color:var(--t1)}
+.btn-add-loc{width:100%;padding:11px;background:transparent;color:var(--gl);border:1px dashed rgba(212,166,86,.3);border-radius:10px;font-family:var(--sans);font-size:13px;cursor:pointer;transition:all .2s;margin-bottom:20px}
+.btn-add-loc:hover{border-color:rgba(212,166,86,.6);background:rgba(212,166,86,.04)}
+
+/* Notice */
+.notice{padding:14px 16px;border-radius:10px;font-size:13px;line-height:1.6;margin-bottom:20px;display:flex;gap:10px;align-items:flex-start}
+.notice.info{background:rgba(212,166,86,.07);border:1px solid rgba(212,166,86,.18);color:var(--t2)}
+.notice.success{background:var(--grn-bg);border:1px solid var(--grn-b);color:var(--t2)}
+.notice-icon{font-size:14px;flex-shrink:0;margin-top:1px}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--b2) 30%,var(--b2) 70%,transparent);margin:24px 0}
+
+/* Summary */
+.summary-loc{background:rgba(255,247,230,.03);border:1px solid var(--b1);border-radius:10px;padding:14px;margin-bottom:10px}
+.summary-loc-name{font-size:14px;font-weight:500;margin-bottom:4px}
+.summary-loc-detail{font-size:12px;color:var(--t2)}
+.summary-loc-num{font-size:11px;font-family:var(--mono);color:var(--gl);margin-top:4px}
+
+/* Success */
+.success-wrap{text-align:center;padding:40px 0}
+.success-icon{width:64px;height:64px;border-radius:50%;background:var(--grn-bg);border:1px solid var(--grn-b);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 24px}
+.success-title{font-family:var(--serif);font-size:32px;font-weight:400;letter-spacing:-.8px;margin-bottom:10px;background:linear-gradient(180deg,var(--t1),var(--ch));-webkit-background-clip:text;background-clip:text;color:transparent}
+.success-title em{font-style:italic;color:var(--gl)}
+.success-sub{font-size:14px;color:var(--t2);font-weight:300;line-height:1.65;max-width:440px;margin:0 auto 28px}
+.loc-result{background:rgba(255,247,230,.03);border:1px solid var(--b1);border-radius:10px;padding:14px;margin-bottom:10px;text-align:left}
+.loc-result-name{font-size:13px;font-weight:500}
+.loc-result-num{font-size:12px;font-family:var(--mono);color:var(--gl);margin-top:3px}
+.loc-result-fwd{font-size:11px;color:var(--t3);margin-top:3px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="/" class="logo">lexa<em>.</em></a>
+
+  <div class="enterprise-badge">★ Enterprise</div>
+
+  <!-- Step bar -->
+  <div class="step-bar" id="stepBar">
+    <div class="step-dot active" id="dot1"><span>1</span></div>
+    <div class="step-line" id="line1"></div>
+    <div class="step-dot" id="dot2"><span>2</span></div>
+    <div class="step-line" id="line2"></div>
+    <div class="step-dot" id="dot3"><span>3</span></div>
+    <div class="step-line" id="line3"></div>
+    <div class="step-dot" id="dot4"><span>4</span></div>
+  </div>
+
+  <!-- STEP 1: Owner details -->
+  <div class="step active" id="step1">
+    <div class="page-eyebrow">Step 1 of 4</div>
+    <h1 class="page-title">Your business<br><em>headquarters</em></h1>
+    <p class="page-sub">Tell us about your brand. We'll set up a separate Lexa number for each location.</p>
+
+    <div class="field">
+      <label>Brand / Company name</label>
+      <input type="text" id="brandName" placeholder="e.g. Glow Aesthetics Group">
+    </div>
+    <div class="field">
+      <label>Your email</label>
+      <input type="email" id="ownerEmail" placeholder="you@yourcompany.com">
+      <p class="hint">Used to log in and manage all locations from one dashboard</p>
+    </div>
+    <div class="field">
+      <label>Your phone (booking approvals)</label>
+      <input type="tel" id="ownerPhone" placeholder="+1 (555) 000-0000">
+      <p class="hint">All locations send booking approvals to this number</p>
+    </div>
+    <div class="field">
+      <label>Business type</label>
+      <div class="vert-grid">
+        <div class="vert-opt"><input type="radio" name="vertical" id="v-medspa" value="medspa"><label for="v-medspa"><span class="vert-icon">💉</span><div><div class="vert-name">Med Spa</div><div class="vert-desc">Botox, fillers, lasers</div></div></label></div>
+        <div class="vert-opt"><input type="radio" name="vertical" id="v-dental" value="dental"><label for="v-dental"><span class="vert-icon">🦷</span><div><div class="vert-name">Dental</div><div class="vert-desc">Cleanings, implants</div></div></label></div>
+        <div class="vert-opt"><input type="radio" name="vertical" id="v-vet" value="veterinary"><label for="v-vet"><span class="vert-icon">🐾</span><div><div class="vert-name">Veterinary</div><div class="vert-desc">Wellness, vaccines</div></div></label></div>
+        <div class="vert-opt"><input type="radio" name="vertical" id="v-spa" value="spa"><label for="v-spa"><span class="vert-icon">💆</span><div><div class="vert-name">Spa & Wellness</div><div class="vert-desc">Massage, facials</div></div></label></div>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="goStep(2)">Continue →</button>
+  </div>
+
+  <!-- STEP 2: Locations -->
+  <div class="step" id="step2">
+    <div class="page-eyebrow">Step 2 of 4</div>
+    <h1 class="page-title">Your <em>locations</em></h1>
+    <p class="page-sub">Add each location. Lexa gets a dedicated phone number per location — customers call their nearest branch.</p>
+
+    <div class="notice info">
+      <span class="notice-icon">💡</span>
+      <span>Each location gets its own Twilio number automatically. Paste the website URL — Lexa reads services and hours for that branch.</span>
+    </div>
+
+    <div id="locations-container"></div>
+
+    <button class="btn-add-loc" onclick="addLocationCard()">+ Add another location</button>
+
+    <button class="btn-primary" onclick="goStep(3)">Continue →</button>
+    <button class="btn-secondary" onclick="goStep(1)">← Back</button>
+  </div>
+
+  <!-- STEP 3: Review -->
+  <div class="step" id="step3">
+    <div class="page-eyebrow">Step 3 of 4</div>
+    <h1 class="page-title">Review &amp; <em>confirm</em></h1>
+    <p class="page-sub">Check everything looks right. We'll set up all locations simultaneously.</p>
+
+    <div id="review-brand" style="background:rgba(212,166,86,.07);border:1px solid rgba(212,166,86,.2);border-radius:12px;padding:16px;margin-bottom:20px">
+      <div style="font-size:11px;font-family:var(--mono);color:var(--gl);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Brand</div>
+      <div id="review-brand-name" style="font-size:15px;font-weight:500"></div>
+      <div id="review-brand-email" style="font-size:12px;color:var(--t2);margin-top:3px"></div>
+    </div>
+
+    <div style="font-size:11px;font-family:var(--mono);color:var(--t3);margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px">Locations to set up</div>
+    <div id="review-locations"></div>
+
+    <div class="divider"></div>
+    <div class="notice info">
+      <span class="notice-icon">⚡</span>
+      <span>Setup takes ~30 seconds per location. We'll buy all Twilio numbers and read each website simultaneously.</span>
+    </div>
+
+    <button class="btn-primary" id="setupBtn" onclick="runSetup()">Set up all locations →</button>
+    <button class="btn-secondary" onclick="goStep(2)">← Back</button>
+  </div>
+
+  <!-- STEP 4: Done -->
+  <div class="step" id="step4">
+    <div class="success-wrap">
+      <div class="success-icon">🎉</div>
+      <h2 class="success-title">All locations <em>live</em></h2>
+      <p class="success-sub" id="successMsg">Lexa is now answering calls for all your locations.</p>
+
+      <div style="text-align:left;margin-bottom:24px">
+        <div style="font-size:11px;font-family:var(--mono);color:var(--t3);margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px">Your Lexa numbers</div>
+        <div id="results-list"></div>
+      </div>
+
+      <div style="background:rgba(255,247,230,.03);border:1px solid var(--b1);border-radius:12px;padding:16px;margin-bottom:16px;text-align:left">
+        <div style="font-size:11px;font-family:var(--mono);color:var(--t3);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px">Next steps</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;gap:10px;font-size:13px;color:var(--t2)"><span style="color:var(--grn)">✓</span> Forward each location's number to its Lexa number above</div>
+          <div style="display:flex;gap:10px;font-size:13px;color:var(--t2)"><span style="color:var(--grn)">✓</span> Check your email — dashboard access link sent</div>
+          <div style="display:flex;gap:10px;font-size:13px;color:var(--t2)"><span style="color:var(--gl)">→</span> Switch between locations from your dashboard</div>
+          <div style="display:flex;gap:10px;font-size:13px;color:var(--t2)"><span style="color:var(--gl)">→</span> Add services, hours and offers per location</div>
+        </div>
+      </div>
+
+      <a href="https://dashboard.itslexa.com" id="dashBtn" style="display:block;width:100%;padding:14px;background:linear-gradient(180deg,var(--gl),var(--g));color:#0A0A0B;border:none;border-radius:10px;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;text-align:center">Go to your dashboard →</a>
+
+      <p style="font-size:12px;color:var(--t3);font-family:var(--mono);margin-top:16px">Questions? eppili.naveen@itslexa.com — we reply within the hour</p>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentStep = 1
+let locCount = 0
+
+// ── Init ──────────────────────────────────────────────────
+window.onload = () => {
+  addLocationCard()  // start with one location
+}
+
+// ── Location cards ────────────────────────────────────────
+function addLocationCard() {
+  locCount++
+  const n = locCount
+  const defaults = {
+    medspa: 'Botox, Dysport, Juvederm fillers, HydraFacial, microneedling, IPL laser, CoolSculpting, chemical peels',
+    dental: 'Dental cleaning, exam, whitening, veneers, implants, Invisalign, fillings, crowns',
+    veterinary: 'Wellness exam, vaccines, spay/neuter, dental cleaning, bloodwork, x-rays, microchipping',
+    spa: 'Swedish massage, deep tissue, hot stone, couples massage, HydraFacial, classic facial, body scrub'
+  }
+
+  const card = document.createElement('div')
+  card.className = 'loc-card'
+  card.id = `loc-${n}`
+  card.innerHTML = `
+    <div class="loc-card-header">
+      <span class="loc-card-num">Location ${n}</span>
+      ${n > 1 ? `<button class="loc-remove" onclick="removeLocation(${n})" title="Remove">✕</button>` : ''}
+    </div>
+    <div class="field" style="margin-bottom:12px">
+      <label>Location name</label>
+      <input type="text" id="loc-name-${n}" placeholder="e.g. Downtown, Uptown, North Austin">
+    </div>
+    <div class="field" style="margin-bottom:12px">
+      <label>Website URL</label>
+      <input type="url" id="loc-url-${n}" placeholder="https://location-specific-page.com">
+      <p class="hint">Paste the page for this specific location if available</p>
+    </div>
+    <div class="loc-grid">
+      <div class="field">
+        <label>Address</label>
+        <input type="text" id="loc-addr-${n}" placeholder="123 Main St, Austin TX">
+      </div>
+      <div class="field">
+        <label>Area code</label>
+        <input type="tel" id="loc-area-${n}" placeholder="512" maxlength="3"
+          style="font-family:var(--mono)">
+        <p class="hint">For local number</p>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:0">
+      <label>Services at this location</label>
+      <textarea id="loc-services-${n}" placeholder="e.g. Botox, fillers, HydraFacial..."></textarea>
+    </div>
+  `
+  document.getElementById('locations-container').appendChild(card)
+
+  // Auto-fill services based on vertical
+  const vert = document.querySelector('input[name=vertical]:checked')?.value
+  if (vert && defaults[vert]) {
+    setTimeout(() => {
+      const el = document.getElementById(`loc-services-${n}`)
+      if (el && !el.value) el.value = defaults[vert]
+    }, 50)
+  }
+}
+
+function removeLocation(n) {
+  const card = document.getElementById(`loc-${n}`)
+  if (card) card.remove()
+}
+
+function getLocations() {
+  const locs = []
+  document.querySelectorAll('.loc-card').forEach(card => {
+    const n = card.id.replace('loc-', '')
+    const name     = document.getElementById(`loc-name-${n}`)?.value.trim() || ''
+    const url      = document.getElementById(`loc-url-${n}`)?.value.trim() || ''
+    const addr     = document.getElementById(`loc-addr-${n}`)?.value.trim() || ''
+    const area     = document.getElementById(`loc-area-${n}`)?.value.trim() || ''
+    const services = document.getElementById(`loc-services-${n}`)?.value.trim() || ''
+    if (name || url) locs.push({ name, url, addr, area, services })
+  })
+  return locs
+}
+
+// ── Step navigation ───────────────────────────────────────
+function goStep(n) {
+  // Validate step 1
+  if (currentStep === 1 && n > 1) {
+    const name  = document.getElementById('brandName').value.trim()
+    const email = document.getElementById('ownerEmail').value.trim()
+    const phone = document.getElementById('ownerPhone').value.trim()
+    const vert  = document.querySelector('input[name=vertical]:checked')
+    if (!name)  { document.getElementById('brandName').focus(); return }
+    if (!email || !email.includes('@')) { document.getElementById('ownerEmail').focus(); return }
+    if (!phone) { document.getElementById('ownerPhone').focus(); return }
+    if (!vert)  { return }
+  }
+
+  // Validate step 2
+  if (currentStep === 2 && n > 2) {
+    const locs = getLocations()
+    if (!locs.length) { alert('Add at least one location'); return }
+    const missing = locs.find(l => !l.name)
+    if (missing) { alert('Give each location a name'); return }
+    buildReview(locs)
+  }
+
+  document.getElementById('step' + currentStep).classList.remove('active')
+  document.getElementById('step' + n).classList.add('active')
+  for (let i = 1; i <= 4; i++) {
+    const dot = document.getElementById('dot' + i)
+    dot.classList.remove('active','done')
+    if (i < n) dot.classList.add('done')
+    else if (i === n) dot.classList.add('active')
+  }
+  for (let i = 1; i <= 3; i++) {
+    document.getElementById('line' + i).classList.toggle('done', i < n)
+  }
+  currentStep = n
+  window.scrollTo({top: 0, behavior: 'smooth'})
+}
+
+function buildReview(locs) {
+  const name  = document.getElementById('brandName').value.trim()
+  const email = document.getElementById('ownerEmail').value.trim()
+  document.getElementById('review-brand-name').textContent = name
+  document.getElementById('review-brand-email').textContent = email
+
+  document.getElementById('review-locations').innerHTML = locs.map((l, i) => `
+    <div class="summary-loc">
+      <div class="summary-loc-name">Location ${i+1}: ${l.name}</div>
+      <div class="summary-loc-detail">${l.addr || 'No address'} · Area code: ${l.area || 'auto'}</div>
+      ${l.url ? `<div style="font-size:11px;color:var(--t3);margin-top:2px">${l.url}</div>` : ''}
+    </div>
+  `).join('')
+}
+
+// ── Run setup ─────────────────────────────────────────────
+async function runSetup() {
+  const btn   = document.getElementById('setupBtn')
+  const name  = document.getElementById('brandName').value.trim()
+  const email = document.getElementById('ownerEmail').value.trim()
+  const phone = document.getElementById('ownerPhone').value.trim()
+  const vert  = document.querySelector('input[name=vertical]:checked')?.value || 'medspa'
+  const locs  = getLocations()
+
+  btn.textContent = `Setting up ${locs.length} location${locs.length>1?'s':''}...`
+  btn.disabled = true
+
+  const results = []
+  let allOk = true
+
+  // Set up each location sequentially (avoid Twilio rate limits)
+  for (let i = 0; i < locs.length; i++) {
+    const loc = locs[i]
+    btn.textContent = `Setting up location ${i+1} of ${locs.length}...`
+
+    try {
+      const resp = await fetch('https://dashboard.itslexa.com/onboard', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          website_url:   loc.url || 'https://itslexa.com',
+          business_name: `${name} — ${loc.name}`,
+          business_type: vert,
+          address:       loc.addr,
+          owner_whatsapp:phone,
+          owner_email:   email,
+          services:      loc.services,
+          plan:          'enterprise',
+          area_code:     loc.area,
+        })
+      })
+      const data = await resp.json()
+      results.push({
+        name:       `${name} — ${loc.name}`,
+        addr:       loc.addr,
+        lexaNumber: data.lexa_number || '(pending)',
+        forward:    phone,
+        ok:         data.status === 'success' || !!data.lexa_number,
+      })
+      if (data.lexa_number) {
+        localStorage.setItem('lexa_phone', data.lexa_number)
+        localStorage.setItem('lexa_email', email)
+        localStorage.setItem('lexa_biz',   `${name} — ${loc.name}`)
+        if (data.session_token) localStorage.setItem('lexa_token', data.session_token)
+        if (data.dashboard_url) document.getElementById('dashBtn').href = data.dashboard_url
+      }
+    } catch(err) {
+      results.push({ name: `${name} — ${loc.name}`, ok: false, error: err.message })
+      allOk = false
+    }
+
+    // Small delay between locations
+    if (i < locs.length - 1) await new Promise(r => setTimeout(r, 1500))
+  }
+
+  // Auth signup
+  try {
+    await fetch('https://dashboard.itslexa.com/auth/signup', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ email, business_name: name })
+    })
+  } catch(e) {}
+
+  // Show results
+  document.getElementById('successMsg').textContent =
+    `${results.filter(r=>r.ok).length} of ${locs.length} locations are now live.`
+
+  document.getElementById('results-list').innerHTML = results.map(r => `
+    <div class="loc-result">
+      <div class="loc-result-name">${r.ok ? '✅' : '❌'} ${r.name}</div>
+      ${r.lexaNumber ? `<div class="loc-result-num">${r.lexaNumber}</div>` : ''}
+      ${r.lexaNumber ? `<div class="loc-result-fwd">Forward your calls to this number</div>` : ''}
+      ${r.error ? `<div style="font-size:11px;color:#EF4444;margin-top:3px">${r.error}</div>` : ''}
+    </div>
+  `).join('')
+
+  goStep(4)
+}
+</script>
+</body>
+</html>
