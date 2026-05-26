@@ -7,8 +7,7 @@
 <title>Set up Lexa — Get live in 5 minutes</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-<!-- Paddle.js -->
-<script src="https://cdn.paddle.com/paddle/v2/paddle.js" onload="Paddle.Initialize({token:'live_289bc50722940415ed92ebf8659'})"></script>
+<script src="https://cdn.paddle.com/paddle/v2/paddle.js" onload="Paddle.Initialize({token:window._ptoken})"></script>
 <style>
 :root{
   --bg:#0A0A0B;--s1:#111110;--s2:#191917;
@@ -109,8 +108,6 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .ns-text{font-size:13px;color:var(--t2);line-height:1.5}
 .ns-text strong{color:var(--t1);font-weight:500}
 .divider{height:1px;background:linear-gradient(90deg,transparent,var(--b2) 30%,var(--b2) 70%,transparent);margin:28px 0}
-
-/* Paddle plan selector */
 .plan-select{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}
 .plan-card{position:relative;padding:16px;border:1px solid var(--b2);border-radius:10px;cursor:pointer;transition:all .2s;text-align:left}
 .plan-card:hover{border-color:var(--b3)}
@@ -123,6 +120,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 </style>
 </head>
 <body>
+<script>window._ptoken='live_289bc50722940415ed92ebf8659'</script>
 <div class="wrap">
   <a href="/" class="logo">lexa<em>.</em></a>
 
@@ -154,15 +152,15 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
     <div class="field">
       <label>Business type</label>
       <div class="vert-grid">
-        <div class="vert-opt"><input type="radio" name="vertical" id="v-medspa" value="medspa"><label for="v-medspa"><span class="vert-icon">💉</span><div><div class="vert-name">Med Spa</div><div class="vert-desc">Botox, fillers, lasers</div></div></label></div>
-        <div class="vert-opt"><input type="radio" name="vertical" id="v-spa" value="spa"><label for="v-spa"><span class="vert-icon">💆</span><div><div class="vert-name">Spa & Wellness</div><div class="vert-desc">Massage, facials, body treatments</div></div></label></div>
+        <div class="vert-opt"><input type="radio" name="vertical" id="v-medspa" value="medspa"><label for="v-medspa"><span class="vert-icon">💉</span><div><div class="vert-name">Med Spa</div><div class="vert-desc">Botox, fillers, lasers, HydraFacial</div></div></label></div>
+        <div class="vert-opt"><input type="radio" name="vertical" id="v-spa" value="spa"><label for="v-spa"><span class="vert-icon">💆</span><div><div class="vert-name">Spa &amp; Wellness</div><div class="vert-desc">Massage, facials, body treatments</div></div></label></div>
       </div>
     </div>
     <div class="field">
       <label>Your website URL</label>
       <div class="url-wrap">
         <input type="url" id="bizUrl" placeholder="https://yourmedspa.com" autocomplete="url">
-        <button class="url-fetch" id="fetchBtn" onclick="fetchWebsite()">Read website →</button>
+        <button class="url-fetch" id="fetchBtn" onclick="fetchWebsite()">Read website &rarr;</button>
       </div>
       <p class="hint">Lexa reads your services and pricing from your website automatically</p>
       <div class="preview" id="preview">
@@ -182,7 +180,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
       <p class="hint">Lexa sends every new booking here for your approval via SMS</p>
     </div>
 
-    <button class="btn-primary" onclick="submitAndContinue()">Set up Lexa →</button>
+    <button class="btn-primary" onclick="submitAndContinue()">Set up Lexa &rarr;</button>
   </div>
 
   <!-- STEP 2 -->
@@ -201,8 +199,8 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
       <div class="hours-row is-closed" id="row-sun"><span class="day-name">Sunday</span><input class="hours-input" type="time" value="10:00"><input class="hours-input" type="time" value="16:00"><label class="closed-toggle"><input type="checkbox" checked onchange="toggleClosed(this,'row-sun')"> closed</label></div>
     </div>
     <div class="divider"></div>
-    <button class="btn-primary" onclick="goStep(3)">Continue →</button>
-    <button class="btn-secondary" onclick="goStep(1)">← Back</button>
+    <button class="btn-primary" onclick="goStep(3)">Continue &rarr;</button>
+    <button class="btn-secondary" onclick="goStep(1)">&larr; Back</button>
   </div>
 
   <!-- STEP 3 -->
@@ -211,7 +209,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
     <h1 class="page-title">Your Lexa<br><em>phone number</em></h1>
     <p class="page-sub">Forward your existing business number to this — Lexa answers in your business name.</p>
     <div class="notice info">
-      <span class="notice-icon">⚡</span>
+      <span class="notice-icon">&#9889;</span>
       <span>Your dedicated Lexa number has been assigned. Forward your business calls to this number to go live.</span>
     </div>
     <div class="phone-card">
@@ -219,7 +217,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
       <div class="phone-number" id="lexaNumber">Loading...</div>
       <div style="font-size:12px;color:var(--t2);margin-bottom:16px">Forward your business calls to this number</div>
       <div class="phone-steps">
-        <div class="phone-step"><div class="phone-step-n">1</div><div>Go to your phone's <strong>Settings → Phone → Call Forwarding</strong> (iPhone) or your carrier's app</div></div>
+        <div class="phone-step"><div class="phone-step-n">1</div><div>Go to your phone's <strong>Settings &rarr; Phone &rarr; Call Forwarding</strong> (iPhone) or your carrier's app</div></div>
         <div class="phone-step"><div class="phone-step-n">2</div><div>Set "Forward when unanswered" to: <strong id="lexaNumberInline">...</strong> <button class="copy-btn" onclick="copyNumber()">copy</button></div></div>
         <div class="phone-step"><div class="phone-step-n">3</div><div>Call your own number from another phone to test — Lexa will answer</div></div>
       </div>
@@ -228,51 +226,50 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
     <div class="field">
       <label>Test call complete?</label>
       <div style="display:flex;gap:10px;margin-top:4px">
-        <button onclick="setTestDone(true)" id="testYes" style="flex:1;padding:10px;background:var(--grn-bg);border:1px solid var(--grn-b);border-radius:8px;color:var(--grn);font-family:var(--sans);font-size:13px;cursor:pointer">✓ Yes, Lexa answered</button>
+        <button onclick="setTestDone(true)" id="testYes" style="flex:1;padding:10px;background:var(--grn-bg);border:1px solid var(--grn-b);border-radius:8px;color:var(--grn);font-family:var(--sans);font-size:13px;cursor:pointer">&#10003; Yes, Lexa answered</button>
         <button onclick="setTestDone(false)" id="testNo" style="flex:1;padding:10px;background:rgba(255,247,230,.03);border:1px solid var(--b1);border-radius:8px;color:var(--t3);font-family:var(--sans);font-size:13px;cursor:pointer">Skip for now</button>
       </div>
     </div>
-    <button class="btn-primary" onclick="goStep(4)" style="margin-top:4px">Continue →</button>
-    <button class="btn-secondary" onclick="goStep(2)">← Back</button>
+    <button class="btn-primary" onclick="goStep(4)" style="margin-top:4px">Continue &rarr;</button>
+    <button class="btn-secondary" onclick="goStep(2)">&larr; Back</button>
   </div>
 
   <!-- STEP 4 -->
   <div class="step" id="step4">
     <div class="success-wrap">
-      <div class="success-icon">🎉</div>
+      <div class="success-icon">&#127881;</div>
       <h2 class="success-title">Lexa is <em>live</em></h2>
       <p class="success-sub" id="successMsg">Your AI receptionist is answering calls, booking appointments, and notifying you — right now.</p>
 
       <div class="next-steps">
-        <div class="next-step"><div class="ns-check">✓</div><div class="ns-text"><strong>Business set up</strong> — services, hours, and notifications configured</div></div>
-        <div class="next-step"><div class="ns-check" style="background:rgba(212,166,86,.1);border-color:rgba(212,166,86,.25);color:var(--gl)">✉</div><div class="ns-text"><strong>Check your email</strong> — we sent you a link to access your dashboard</div></div>
-        <div class="next-step"><div class="ns-check">✓</div><div class="ns-text"><strong>Lexa number assigned</strong> — forward your calls to activate</div></div>
-        <div class="next-step"><div class="ns-check" style="background:rgba(212,166,86,.1);border-color:rgba(212,166,86,.25);color:var(--gl)">→</div><div class="ns-text"><strong>Add an active offer</strong> — Lexa will mention it on every relevant call</div></div>
+        <div class="next-step"><div class="ns-check">&#10003;</div><div class="ns-text"><strong>Business set up</strong> — services, hours, and notifications configured</div></div>
+        <div class="next-step"><div class="ns-check" style="background:rgba(212,166,86,.1);border-color:rgba(212,166,86,.25);color:var(--gl)">&#9993;</div><div class="ns-text"><strong>Check your email</strong> — we sent you a link to access your dashboard</div></div>
+        <div class="next-step"><div class="ns-check">&#10003;</div><div class="ns-text"><strong>Lexa number assigned</strong> — forward your calls to activate</div></div>
+        <div class="next-step"><div class="ns-check" style="background:rgba(212,166,86,.1);border-color:rgba(212,166,86,.25);color:var(--gl)">&rarr;</div><div class="ns-text"><strong>Add an active offer</strong> — Lexa will mention it on every relevant call</div></div>
       </div>
 
-      <!-- Paddle plan + subscription -->
       <div style="background:rgba(255,247,230,.03);border:1px solid var(--b1);border-radius:12px;padding:20px;margin-bottom:16px;text-align:left">
         <div style="font-size:11px;font-family:var(--mono);color:var(--t3);margin-bottom:14px;text-transform:uppercase;letter-spacing:.5px">Choose your plan — 14 days free</div>
         <div class="plan-select">
           <div class="plan-card" id="planEssential" onclick="selectPlan('essential')">
             <div class="plan-name">Essential</div>
             <div class="plan-price">$299</div>
-            <div class="plan-period">/month · 500 calls</div>
+            <div class="plan-period">/month &middot; 500 calls</div>
           </div>
           <div class="plan-card featured selected" id="planPrestige" onclick="selectPlan('prestige')">
             <div class="plan-badge">MOST POPULAR</div>
             <div class="plan-name">Prestige</div>
             <div class="plan-price">$499</div>
-            <div class="plan-period">/month · 1,000 calls</div>
+            <div class="plan-period">/month &middot; 1,000 calls</div>
           </div>
         </div>
         <button class="btn-primary" id="paddleBtn" onclick="startPaddleCheckout()">
-          Start 14-day free trial →
+          Start 14-day free trial &rarr;
         </button>
-        <p style="font-size:11px;font-family:var(--mono);color:var(--t3);text-align:center;margin-top:10px">No charge for 14 days · Cancel any time</p>
+        <p style="font-size:11px;font-family:var(--mono);color:var(--t3);text-align:center;margin-top:10px">No charge for 14 days &middot; Cancel any time</p>
       </div>
 
-      <a href="https://dashboard.itslexa.com" id="dashBtn" style="display:block;width:100%;padding:14px;background:transparent;color:var(--t2);border:1px solid var(--b2);border-radius:10px;font-family:var(--sans);font-size:14px;cursor:pointer;text-decoration:none;text-align:center;transition:all .2s">Go to dashboard first →</a>
+      <a href="https://dashboard.itslexa.com" id="dashBtn" style="display:block;width:100%;padding:14px;background:transparent;color:var(--t2);border:1px solid var(--b2);border-radius:10px;font-family:var(--sans);font-size:14px;cursor:pointer;text-decoration:none;text-align:center;transition:all .2s">Go to dashboard first &rarr;</a>
 
       <p style="font-size:12px;color:var(--t3);font-family:var(--mono);margin-top:16px">Questions? eppili.naveen@itslexa.com — we reply within the hour</p>
     </div>
@@ -280,63 +277,47 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 </div>
 
 <script>
-// ── State ─────────────────────────────────────────────────
 let currentStep = 1
-let selectedPlan = 'prestige'  // default
-let onboardData  = {}          // filled after /onboard call
+let selectedPlan = 'prestige'
+let onboardData  = {}
 
 const PRICE_IDS = {
   essential: 'pri_01ks4q6jysv0atr4sj9kb302qn',
   prestige:  'pri_01ks4qctqqg7v8hvh9qyejkqke',
 }
 
-// Read plan from URL param: ?plan=essential or ?plan=prestige
 const urlPlan = new URLSearchParams(location.search).get('plan')
 if (urlPlan && PRICE_IDS[urlPlan]) selectedPlan = urlPlan
 
-// ── Plan selector ─────────────────────────────────────────
 function selectPlan(plan) {
   selectedPlan = plan
   document.getElementById('planEssential').classList.toggle('selected', plan === 'essential')
   document.getElementById('planPrestige').classList.toggle('selected', plan === 'prestige')
 }
-// Apply URL param on load
 selectPlan(selectedPlan)
 
-// ── Paddle checkout ───────────────────────────────────────
 async function startPaddleCheckout() {
   const btn = document.getElementById('paddleBtn')
   btn.textContent = 'Opening checkout...'
   btn.disabled = true
-
   const email      = localStorage.getItem('lexa_email') || document.getElementById('ownerEmail')?.value?.trim() || ''
   const salonPhone = localStorage.getItem('lexa_phone') || ''
-  const bizName    = localStorage.getItem('lexa_biz') || ''
-
   try {
     Paddle.Checkout.open({
       items: [{ priceId: PRICE_IDS[selectedPlan], quantity: 1 }],
       customer: { email },
-      customData: {
-        salon_phone: salonPhone,
-        owner_email: email,
-        plan: selectedPlan,
-      },
+      customData: { salon_phone: salonPhone, owner_email: email, plan: selectedPlan },
       settings: {
         displayMode: 'overlay',
         theme: 'dark',
         successUrl: `https://itslexa.com/onboard.html?success=1&phone=${encodeURIComponent(salonPhone)}`,
       },
     })
-  } catch(e) {
-    console.error('Paddle error:', e)
-  }
-
-  btn.textContent = 'Start 14-day free trial →'
+  } catch(e) { console.error('Paddle error:', e) }
+  btn.textContent = 'Start 14-day free trial \u2192'
   btn.disabled = false
 }
 
-// ── Step navigation ───────────────────────────────────────
 function goStep(n) {
   if (currentStep === 1 && n > 1) {
     const name  = document.getElementById('bizName').value.trim()
@@ -393,8 +374,9 @@ async function fetchWebsite() {
   const vert   = document.querySelector('input[name=vertical]:checked')
   document.getElementById('previewName').textContent = name || url.replace(/https?:\/\/(www\.)?/,'').split('/')[0]
   document.getElementById('previewServices').textContent =
-    vert?.value === 'medspa'      ? 'Services detected: Botox, Dysport, dermal fillers, HydraFacial, microneedling, laser' :
-    'Services detected: Swedish massage, deep tissue, hot stone, HydraFacial, facials'
+    vert?.value === 'medspa'
+      ? 'Services detected: Botox, Dysport, dermal fillers, HydraFacial, microneedling, laser'
+      : 'Services detected: Swedish massage, deep tissue, hot stone, HydraFacial, facials'
   document.getElementById('preview').classList.add('show')
   if (!document.getElementById('services').value && vert) {
     const d = {
@@ -403,7 +385,7 @@ async function fetchWebsite() {
     }
     document.getElementById('services').value = d[vert.value] || ''
   }
-  btn.textContent = '✓ Website read'
+  btn.textContent = '\u2713 Website read'
   btn.style.color = 'var(--grn)'
   btn.style.borderColor = 'var(--grn-b)'
   btn.style.background = 'var(--grn-bg)'
@@ -453,20 +435,15 @@ async function submitAndContinue() {
     })
     const data = await resp.json()
     onboardData = data
-
-    // Store for Paddle checkout
     localStorage.setItem('lexa_email', email)
     localStorage.setItem('lexa_biz', data.business_name || name)
     if (data.lexa_number) {
       localStorage.setItem('lexa_phone', data.lexa_number)
-      // Update step 3 number display
       document.getElementById('lexaNumber').textContent = data.lexa_number
       document.getElementById('lexaNumberInline').textContent = data.lexa_number
     }
     if (data.session_token) localStorage.setItem('lexa_token', data.session_token)
     if (data.dashboard_url) document.getElementById('dashBtn').href = data.dashboard_url
-
-    // Auth signup
     try {
       await fetch('https://dashboard.itslexa.com/auth/signup', {
         method: 'POST',
@@ -474,12 +451,9 @@ async function submitAndContinue() {
         body: JSON.stringify({ email, salon_phone: data.lexa_number || phone, business_name: data.business_name || name })
       })
     } catch(e) { console.log('Auth:', e) }
+  } catch(err) { console.log('Onboard error:', err) }
 
-  } catch(err) {
-    console.log('Onboard error:', err)
-  }
-
-  btn.textContent = 'Set up Lexa →'
+  btn.textContent = 'Set up Lexa \u2192'
   btn.disabled = false
   goStep(2)
 }
