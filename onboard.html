@@ -155,8 +155,6 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
       <label>Business type</label>
       <div class="vert-grid">
         <div class="vert-opt"><input type="radio" name="vertical" id="v-medspa" value="medspa"><label for="v-medspa"><span class="vert-icon">💉</span><div><div class="vert-name">Med Spa</div><div class="vert-desc">Botox, fillers, lasers</div></div></label></div>
-        <div class="vert-opt"><input type="radio" name="vertical" id="v-dental" value="dental"><label for="v-dental"><span class="vert-icon">🦷</span><div><div class="vert-name">Dental</div><div class="vert-desc">Cleanings, implants, Invisalign</div></div></label></div>
-        <div class="vert-opt"><input type="radio" name="vertical" id="v-vet" value="veterinary"><label for="v-vet"><span class="vert-icon">🐾</span><div><div class="vert-name">Veterinary</div><div class="vert-desc">Wellness, vaccines, surgery</div></div></label></div>
         <div class="vert-opt"><input type="radio" name="vertical" id="v-spa" value="spa"><label for="v-spa"><span class="vert-icon">💆</span><div><div class="vert-name">Spa & Wellness</div><div class="vert-desc">Massage, facials, body treatments</div></div></label></div>
       </div>
     </div>
@@ -396,15 +394,11 @@ async function fetchWebsite() {
   document.getElementById('previewName').textContent = name || url.replace(/https?:\/\/(www\.)?/,'').split('/')[0]
   document.getElementById('previewServices').textContent =
     vert?.value === 'medspa'      ? 'Services detected: Botox, Dysport, dermal fillers, HydraFacial, microneedling, laser' :
-    vert?.value === 'dental'      ? 'Services detected: Cleaning, exam, whitening, veneers, implants, Invisalign' :
-    vert?.value === 'veterinary'  ? 'Services detected: Wellness exam, vaccines, spay/neuter, dental, bloodwork' :
     'Services detected: Swedish massage, deep tissue, hot stone, HydraFacial, facials'
   document.getElementById('preview').classList.add('show')
   if (!document.getElementById('services').value && vert) {
     const d = {
       medspa:'Botox, Dysport, Juvederm fillers, Restylane fillers, HydraFacial, microneedling, IPL laser, Morpheus8, CoolSculpting, chemical peels',
-      dental:'Dental cleaning, exam, x-rays, teeth whitening, veneers, dental implants, Invisalign, fillings, crowns, emergency dental',
-      veterinary:'Wellness exam, DHPP vaccine, FVRCP vaccine, Rabies vaccine, spay/neuter, dental cleaning, bloodwork, x-rays, microchipping',
       spa:'Swedish massage, deep tissue massage, hot stone massage, couples massage, HydraFacial, classic facial, anti-aging facial, body scrub'
     }
     document.getElementById('services').value = d[vert.value] || ''
@@ -420,8 +414,6 @@ document.querySelectorAll('input[name=vertical]').forEach(r => {
     if (!document.getElementById('bizUrl').value) {
       const d = {
         medspa:'Botox, Dysport, Juvederm fillers, Restylane fillers, HydraFacial, microneedling, IPL laser, Morpheus8, CoolSculpting, chemical peels',
-        dental:'Dental cleaning, exam, x-rays, teeth whitening, veneers, dental implants, Invisalign, fillings, crowns',
-        veterinary:'Wellness exam, DHPP vaccine, FVRCP vaccine, Rabies vaccine, spay/neuter, dental cleaning, bloodwork',
         spa:'Swedish massage, deep tissue massage, hot stone, couples massage, HydraFacial, classic facial'
       }
       if (!document.getElementById('services').value)
