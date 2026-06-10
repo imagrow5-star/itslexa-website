@@ -31,6 +31,8 @@ a{color:var(--gl);text-decoration:none}a:hover{text-decoration:underline}
 table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:13px}
 th{text-align:left;padding:10px 14px;background:rgba(255,247,230,.025);border:1px solid var(--b1);color:var(--t1);font-weight:500;font-family:var(--mono);font-size:11px;letter-spacing:.5px}
 td{padding:10px 14px;border:1px solid var(--b1);color:var(--t2);font-weight:300;vertical-align:top}
+.sms-box{background:linear-gradient(180deg,rgba(34,197,94,.07),rgba(34,197,94,.02));border:1px solid rgba(34,197,94,.2);border-radius:14px;padding:24px 28px;margin:28px 0}
+.sms-box p{margin:0;font-size:14px;color:var(--t2)}
 .contact-box{background:linear-gradient(180deg,rgba(212,166,86,.07),rgba(212,166,86,.02));border:1px solid rgba(212,166,86,.18);border-radius:14px;padding:28px 32px;margin-top:52px}
 .contact-box p{margin:0;font-size:14px;color:var(--t2)}
 footer{position:relative;z-index:2;border-top:1px solid var(--b1);padding:36px 52px;display:flex;align-items:center;justify-content:space-between}
@@ -69,7 +71,7 @@ footer{position:relative;z-index:2;border-top:1px solid var(--b1);padding:36px 5
     <tr><td>Caller phone numbers</td><td>Twilio — inbound calls</td><td>Booking, SMS confirmations</td></tr>
     <tr><td>Caller names</td><td>Spoken during call</td><td>Personalised greetings</td></tr>
     <tr><td>Booking details</td><td>Call conversation</td><td>Appointment management</td></tr>
-    <tr><td>Call logs & transcripts</td><td>AI processing</td><td>Service quality, troubleshooting</td></tr>
+    <tr><td>Call logs &amp; transcripts</td><td>AI processing</td><td>Service quality, troubleshooting</td></tr>
   </table>
 
   <h2>3. How We Use Your Data</h2>
@@ -93,19 +95,34 @@ footer{position:relative;z-index:2;border-top:1px solid var(--b1);padding:36px 5
   </ul>
   <p>We do not sell your data or your customers' data to any third party, ever.</p>
 
-  <h2>5. Data Storage & Security</h2>
+  <div class="sms-box">
+    <p><strong style="color:#22C55E">SMS Data Sharing Policy:</strong> No mobile information will be shared with third parties or affiliates for marketing or promotional purposes. All SMS opt-in data and consent will not be shared with any third parties. This includes text messaging originator opt-in data and consent records.</p>
+  </div>
+
+  <h2>5. SMS Messaging</h2>
+  <p>When a customer calls a business using Lexa AI and books an appointment, they may receive transactional SMS messages including booking confirmations, appointment reminders, and cancellation notices. Before completing any booking, the caller is informed that a confirmation SMS will be sent to their phone number.</p>
+  <ul>
+    <li><strong>Program name:</strong> Lexa AI appointment notifications</li>
+    <li><strong>Message types:</strong> Booking confirmations, 24-hour reminders, 2-hour reminders, cancellation notices</li>
+    <li><strong>Message frequency:</strong> Varies — typically 2 to 3 messages per appointment booked</li>
+    <li><strong>Message and data rates may apply</strong> depending on your mobile carrier plan</li>
+    <li><strong>To opt out:</strong> Reply STOP to any message to unsubscribe immediately</li>
+    <li><strong>For help:</strong> Reply HELP or email <a href="mailto:eppili.naveen@itslexa.com">eppili.naveen@itslexa.com</a></li>
+  </ul>
+
+  <h2>6. Data Storage &amp; Security</h2>
   <p>All data is stored in Supabase (PostgreSQL) hosted on AWS infrastructure, with encryption at rest and in transit (TLS 1.2+). Access is restricted by role-based permissions. We follow industry-standard security practices.</p>
 
-  <h2>6. Data Retention</h2>
+  <h2>7. Data Retention</h2>
   <p>Booking and customer records are retained for 12 months after last activity. Call logs are retained for 90 days. Upon subscription cancellation, data is retained for 30 days then permanently deleted, unless retention is required by applicable law.</p>
 
-  <h2>7. Your Rights</h2>
+  <h2>8. Your Rights</h2>
   <p>You may request access to, correction of, or deletion of your personal data at any time. Email <a href="mailto:eppili.naveen@itslexa.com">eppili.naveen@itslexa.com</a> — we will respond within 30 days. For customers in the EU or UK, standard GDPR rights apply.</p>
 
-  <h2>8. Cookies</h2>
+  <h2>9. Cookies</h2>
   <p>Our website uses minimal cookies for dashboard authentication only. We do not use advertising cookies, tracking pixels, or third-party analytics.</p>
 
-  <h2>9. Changes to This Policy</h2>
+  <h2>10. Changes to This Policy</h2>
   <p>We may update this Privacy Policy from time to time. We will notify subscribers of material changes by email. Continued use of the Service after changes constitutes acceptance.</p>
 
   <div class="contact-box">
