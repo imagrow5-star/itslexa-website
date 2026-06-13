@@ -92,7 +92,7 @@ footer{position:relative;z-index:2;border-top:1px solid var(--b1);padding:36px 5
     <li><strong>ElevenLabs</strong> — Text-to-speech voice synthesis</li>
     <li><strong>Supabase / AWS</strong> — Database hosting and storage</li>
     <li><strong>Paddle</strong> — Subscription billing and payment processing</li>
-    <li><strong>Google</strong> — Reviews data and Calendar sync (optional)</li>
+    <li><strong>Google</strong> — Calendar sync (optional, owner-authorized)</li>
   </ul>
   <p>We do not sell your data or your customers' data to any third party, ever. Information is shared only with the service providers above, strictly to operate the Service.</p>
 
@@ -100,7 +100,17 @@ footer{position:relative;z-index:2;border-top:1px solid var(--b1);padding:36px 5
     <p><strong style="color:#22C55E">SMS Data Sharing Policy:</strong> No mobile information will be shared with third parties or affiliates for marketing or promotional purposes. All SMS opt-in data and consent will not be shared with any third parties. This includes text messaging originator opt-in data and consent records.</p>
   </div>
 
-  <h2>5. SMS Messaging</h2>
+  <h2>5. Google Calendar Integration</h2>
+  <p>If you choose to connect your Google Calendar, Lexa AI requests permission to view and create events on the calendar you authorize, using the <strong>https://www.googleapis.com/auth/calendar.events</strong> scope. We use this access for a single purpose: to add, update, or remove appointment events on your calendar when you confirm a booking in your Lexa dashboard.</p>
+  <ul>
+    <li>We access your Google Calendar <strong>only</strong> to write and manage appointment events you have approved.</li>
+    <li>We do <strong>not</strong> read, store, sell, or share your existing calendar events for any other purpose.</li>
+    <li>We do <strong>not</strong> use Google user data for advertising, marketing, or training AI models.</li>
+    <li>You can disconnect Google Calendar at any time, which revokes Lexa's access.</li>
+  </ul>
+  <p>Lexa AI's use and transfer of information received from Google APIs adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener">Google API Services User Data Policy</a>, including the Limited Use requirements.</p>
+
+  <h2>6. SMS Messaging</h2>
   <p>When a customer calls a business using Lexa AI and books an appointment, they may receive transactional SMS messages including booking confirmations, appointment reminders, and cancellation notices. Before completing any booking, the caller is verbally informed that a confirmation SMS will be sent to their phone number, that message and data rates may apply, and that they can reply STOP to opt out. See our <a href="/sms-consent">SMS Consent &amp; Opt-In</a> page for the full disclosure and a sample call transcript.</p>
   <ul>
     <li><strong>Program name:</strong> Lexa AI appointment notifications</li>
@@ -111,19 +121,19 @@ footer{position:relative;z-index:2;border-top:1px solid var(--b1);padding:36px 5
     <li><strong>For help:</strong> Reply HELP or email <a href="mailto:eppili.naveen@itslexa.com">eppili.naveen@itslexa.com</a></li>
   </ul>
 
-  <h2>6. Data Storage &amp; Security</h2>
-  <p>All data is stored in Supabase (PostgreSQL) hosted on AWS infrastructure, with encryption at rest and in transit (TLS 1.2+). Access is restricted by role-based permissions. We follow industry-standard security practices.</p>
+  <h2>7. Data Storage &amp; Security</h2>
+  <p>All data is stored in Supabase (PostgreSQL) hosted on AWS infrastructure, with encryption at rest and in transit (TLS 1.2+). Google OAuth tokens are encrypted and stored securely; they are never exposed to your browser or any third party. Access is restricted by role-based permissions. We follow industry-standard security practices.</p>
 
-  <h2>7. Data Retention</h2>
+  <h2>8. Data Retention</h2>
   <p>Booking and customer records are retained for 12 months after last activity. Call logs are retained for 90 days. Upon subscription cancellation, data is retained for 30 days then permanently deleted, unless retention is required by applicable law.</p>
 
-  <h2>8. Your Rights</h2>
+  <h2>9. Your Rights</h2>
   <p>You may request access to, correction of, or deletion of your personal data at any time. Email <a href="mailto:eppili.naveen@itslexa.com">eppili.naveen@itslexa.com</a> — we will respond within 30 days. For customers in the EU or UK, standard GDPR rights apply.</p>
 
-  <h2>9. Cookies</h2>
+  <h2>10. Cookies</h2>
   <p>Our website uses minimal cookies for dashboard authentication only. We do not use advertising cookies, tracking pixels, or third-party analytics.</p>
 
-  <h2>10. Changes to This Policy</h2>
+  <h2>11. Changes to This Policy</h2>
   <p>We may update this Privacy Policy from time to time. We will notify subscribers of material changes by email. Continued use of the Service after changes constitutes acceptance.</p>
 
   <div class="contact-box">
