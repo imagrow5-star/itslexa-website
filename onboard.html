@@ -117,9 +117,15 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .plan-name{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gl);margin-bottom:6px}
 .plan-price{font-family:var(--mono);font-size:26px;font-weight:600;color:var(--t1);letter-spacing:-1px;line-height:1}
 .plan-period{font-size:11px;color:var(--t3);margin-top:3px;font-family:var(--mono)}
-</style>
+.ic{stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:-.14em}</style>
 </head>
 <body>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+<symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></symbol>
+<symbol id="i-spark" viewBox="0 0 24 24"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></symbol>
+<symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 7L2 7"/></symbol>
+</svg>
+
 <script>window._ptoken='live_289bc50722940415ed92ebf8659'</script>
 <div class="wrap">
   <a href="/" class="logo">lexa<em>.</em></a>
@@ -209,7 +215,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
     <h1 class="page-title">Your Lexa<br><em>phone number</em></h1>
     <p class="page-sub">Forward your existing business number to this — Lexa answers in your business name.</p>
     <div class="notice info">
-      <span class="notice-icon">&#9889;</span>
+      <span class="notice-icon" style="display:inline-flex;color:var(--gl)"><svg class="ic" style="width:15px;height:15px" aria-hidden="true"><use href="#i-zap"/></svg></span>
       <span>Your dedicated Lexa number has been assigned. Forward your business calls to this number to go live.</span>
     </div>
     <div class="phone-card">
@@ -237,13 +243,13 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
   <!-- STEP 4 -->
   <div class="step" id="step4">
     <div class="success-wrap">
-      <div class="success-icon">&#127881;</div>
+      <div class="success-icon" style="color:var(--gl)"><svg class="ic" style="width:34px;height:34px" aria-hidden="true"><use href="#i-spark"/></svg></div>
       <h2 class="success-title">Lexa is <em>live</em></h2>
       <p class="success-sub" id="successMsg">Your AI receptionist is answering calls, booking appointments, and notifying you — right now.</p>
 
       <div class="next-steps">
         <div class="next-step"><div class="ns-check">&#10003;</div><div class="ns-text"><strong>Business set up</strong> — services, hours, and notifications configured</div></div>
-        <div class="next-step"><div class="ns-check" style="background:rgba(212,166,86,.1);border-color:rgba(212,166,86,.25);color:var(--gl)">&#9993;</div><div class="ns-text"><strong>Check your email</strong> — we sent you a link to access your dashboard</div></div>
+        <div class="next-step"><div class="ns-check" style="background:rgba(212,166,86,.1);border-color:rgba(212,166,86,.25);color:var(--gl)"><svg class="ic" style="width:15px;height:15px" aria-hidden="true"><use href="#i-mail"/></svg></div><div class="ns-text"><strong>Check your email</strong> — we sent you a link to access your dashboard</div></div>
         <div class="next-step"><div class="ns-check">&#10003;</div><div class="ns-text"><strong>Lexa number assigned</strong> — forward your calls to activate</div></div>
         <div class="next-step"><div class="ns-check" style="background:rgba(212,166,86,.1);border-color:rgba(212,166,86,.25);color:var(--gl)">&rarr;</div><div class="ns-text"><strong>Add an active offer</strong> — Lexa will mention it on every relevant call</div></div>
       </div>
